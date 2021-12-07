@@ -1,0 +1,31 @@
+/* Css for the navigationbar */
+nav {
+  position: fixed;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  background-color: #33669A;
+  padding: 2px;
+  z-index: 2;
+}
+
+nav .navGroup {
+  display: flex;
+  justify-content: space-between;
+  width: 10%;
+}
+
+.navGroup {
+  background-color: white;
+  padding: 10px 30px;
+}
+
+.navGroup button {
+  font-size: 16px;
+  background-color: white;
+  border: none;
+}
+
+.navHeight {
+  height: 60px;
+}

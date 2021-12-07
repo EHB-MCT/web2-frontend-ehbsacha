@@ -1,0 +1,97 @@
+#games,
+#games2 {
+  margin: 0 5% 50px;
+  width: 90%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.game .name {
+  height: 25px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.game {
+  max-width: 250px;
+  position: relative;
+  width: auto;
+  height: auto;
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* .topBar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+} */
+
+.game .rating {
+  position: absolute;
+  top: 25px;
+  left: 0px;
+  padding: 10px 15px;
+  text-align: center;
+  background-color: #9BC1E7;
+  color: white;
+}
+
+/* The ranking at the top and the buttons for shelf and wishlist */
+
+/* I've positioned the buttons as absolute to the game */
+.game button {
+  position: absolute;
+  top: 20;
+  width: 40px;
+  height: 40px;
+  border: none;
+  color: white;
+}
+
+.shelf {
+  right: 40px;
+  background-color: #33669A;
+}
+
+.wishlist {
+  right: 0px;
+  background-color: #9BC1E7;
+}
+
+
+
+/* CSS for the bottombar (players, duration, age) */
+
+.bottomBar {
+  display: flex;
+  flex-direction: row;
+}
+
+.bottomBar p {
+  width: 33%;
+  padding: 10px;
+  text-align: center;
+  color: white;
+}
+
+.bottomBar p.players,
+.bottomBar p.age {
+  background-color: #9BC1E7;
+}
+
+.bottomBar p.duration {
+  background-color: #33669A;
+}
+
+.game img {
+  object-fit: contain;
+  width: 250px;
+  height: 200px;
+}
