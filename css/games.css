@@ -1,3 +1,17 @@
+/* The section top, popular or ... */
+/* currently no use */
+.top {
+  width: 100%;
+}
+
+.title {
+  padding: 40px 0 0 7%;
+  font-size: 30px;
+  font-weight: 600;
+}
+
+
+/* The game block flexbox */
 #games,
 #games2 {
   margin: 0 5% 50px;
@@ -8,21 +22,28 @@
   flex-wrap: wrap;
 }
 
-.game .name {
-  height: 25px;
-  font-size: 20px;
-  font-weight: bold;
-}
-
 .game {
-  max-width: 250px;
+  min-width: 250px;
+  max-width: 18vw;
   position: relative;
   width: auto;
   height: auto;
-  margin: 20px;
+  margin: 1% 0 5vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+.game .name {
+  /* background-color: rgba(235, 244, 255, 0.315); */
+  height: 60px;
+  font-size: 27px;
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  /* font-weight: bold; */
+  margin-bottom: 5px;
 }
 
 /* .topBar {
@@ -35,7 +56,7 @@
 
 .game .rating {
   position: absolute;
-  top: 25px;
+  top: 65px;
   left: 0px;
   padding: 10px 15px;
   text-align: center;
@@ -92,6 +113,6 @@
 
 .game img {
   object-fit: contain;
-  width: 250px;
-  height: 200px;
+  width: 18vw;
+  height: 25vh;
 }
