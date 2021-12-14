@@ -11,11 +11,36 @@
 </head>
 <body>
   <nav>
-    <div class="navGroup"><button id="home">Home</button></div>
-    <div class="navGroup"><button id="about">about</button></div>
-    <div class="navGroup"><button id="filters">filters</button><button><i class="fas fa-chevron-down fa-2x"></i></button></div>
-    <div class="navGroup"><button id="search">Search</button><button><i class="fas fa-search fa-2x"></i></button></div>
-    <div class="navGroup"><button id="login">Login</button><button><i class="fas fa-user fa-2x"></i></button></div>
+    <div class="navGroup">
+      <button id="home">
+        <img src="https://static.thenounproject.com/png/1269-200.png" alt="meeple">
+        <img src="https://static.thenounproject.com/png/1269-200.png" alt="meeple">
+        <img src="https://static.thenounproject.com/png/1269-200.png" alt="meeple">
+        <!-- <img src="https://static.thenounproject.com/png/1269-200.png" alt="meeple"> -->
+      </button>
+    </div>
+    <div class="navGroup">
+      <button id="about">about</button>
+    </div>
+    <div class="navGroup">
+      <button id="filters">filters</button>
+      <button><i class="fas fa-chevron-down fa-2x"></i>
+      </button>
+    </div>
+    <div class="navGroup">
+      <button id="search">Search</button>
+      <button><i class="fas fa-search fa-2x"></i>
+      </button>
+    </div>
+    <div class="navGroup dropdown">
+      <button id="login">Login</button><button><i class="fas fa-user fa-2x"></i>
+        <div class="dropdown-content">
+          <a id="login">Login</a>
+          <a id="signup">Signup</a>
+        </div>
+      </button>
+      
+    </div>
   </nav>
   <!-- <div id="games">
     <div class="game">

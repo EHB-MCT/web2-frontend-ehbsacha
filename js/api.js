@@ -3,8 +3,8 @@
 const apiKey = "client_id=5UGynejyAW";
 var games = [];
 
-window.onload = function(){
-    fetchData(`https://api.boardgameatlas.com/api/search?order_by=rank&limit=16&ascending=false&${apiKey}`);
+window.onload = async function(){
+    await fetchData(`https://api.boardgameatlas.com/api/search?order_by=rank&limit=8&ascending=false&${apiKey}`);
     // Filter on best games limit 8
     // https://api.boardgameatlas.com/api/search?order_by=rank&limit=8&ascending=false&${apiKey}
     // Filter on certain ids
@@ -65,3 +65,19 @@ function deString(string, separator){
   const separatedString = separatedArray.join(" ");
   return separatedString;
 }
+
+// WIP reusable fetchcall
+
+// await fetchDatao(`https://api.boardgameatlas.com/api/search?order_by=rank&limit=8&ascending=false&${apiKey}`, games)
+//   .then(e => {
+//     buildList();
+//   }
+// );
+// async function fetchDatao(someUrl, arrayName){
+//   fetch(someUrl)
+//       .then(response => response.json())
+//       .then(data => {
+//         arrayName = data.games;
+//         console.log(arrayName);
+//       });
+// }

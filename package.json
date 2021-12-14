@@ -1,0 +1,24 @@
+{
+  "name": "web2-frontend-ehbsacha",
+  "version": "1.0.0",
+  "description": "Used links:",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EHB-MCT/web2-frontend-ehbsacha.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EHB-MCT/web2-frontend-ehbsacha/issues"
+  },
+  "homepage": "https://github.com/EHB-MCT/web2-frontend-ehbsacha#readme",
+  "dependencies": {
+    "webpack": "^5.65.0",
+    "webpack-cli": "^4.9.1"
+  }
+}
