@@ -1,24 +1,18 @@
 'use strict';
 
 const apiKey = "client_id=5UGynejyAW";
-var games = [];
+var topgames = [];
 
 window.onload = async function(){
-    await fetchData(`https://api.boardgameatlas.com/api/search?order_by=rank&limit=8&ascending=false&${apiKey}`);
-    // Filter on best games limit 8
-    // https://api.boardgameatlas.com/api/search?order_by=rank&limit=8&ascending=false&${apiKey}
-    // Filter on certain ids
-    // https://api.boardgameatlas.com/api/search?ids=TAAifFP590,OIXt3DmJU0&ascending=false&${apiKey}
+    topgames = await fetchData(`https://api.boardgameatlas.com/api/search?order_by=rank&limit=8&ascending=false&${apiKey}`);
+    // populargames = await fetchData(`https://api.boardgameatlas.com/api/search?order_by=rank&limit=8&ascending=false&${apiKey}`); Already for popular
+    console.log(topgames.games);
+    buildList();
 }
 
 async function fetchData(someUrl){
-    fetch(someUrl)
-        .then(response => response.json())
-        .then(data => {
-          games = data.games;
-          console.log(games);
-          buildList();
-        });
+  return await fetch(someUrl)
+      .then(response => response.json());
 }
 
 function buildList(){
@@ -30,7 +24,7 @@ function buildList(){
   //Change the innerHTML of the page
   let html = '';
   //Make a for loop to pass all the games who are needed to be displayed
-  for(let game of games){
+  for(let game of topgames.games){
       var newString = deString(game.handle, "-");
       html += `
       <div class="game">
@@ -65,19 +59,3 @@ function deString(string, separator){
   const separatedString = separatedArray.join(" ");
   return separatedString;
 }
-
-// WIP reusable fetchcall
-
-// await fetchDatao(`https://api.boardgameatlas.com/api/search?order_by=rank&limit=8&ascending=false&${apiKey}`, games)
-//   .then(e => {
-//     buildList();
-//   }
-// );
-// async function fetchDatao(someUrl, arrayName){
-//   fetch(someUrl)
-//       .then(response => response.json())
-//       .then(data => {
-//         arrayName = data.games;
-//         console.log(arrayName);
-//       });
-// }
