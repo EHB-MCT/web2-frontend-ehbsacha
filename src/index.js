@@ -73,18 +73,16 @@ function checkElements() {
   document.getElementById("login").addEventListener("click", function (event) {
     event.preventDefault();
     if(document.getElementById("filter").style.display == "flex"){
-      document.getElementById("filter").style.display = "none";
+      clearScreen();
     }else{
-      document.getElementById("filter").style.display = "flex";
+      showLogin();
     }
   });
 
-  // document.getElementById("filter").addEventListener("click", function (event) {
-  //   event.preventDefault();
-  //   document.getElementById("filter").style.display = "none";
-  //   document.getElementById("loginpopup").style.display = "none";
-  //   document.getElementById("signuppopup").style.display = "none";
-  // });
+  document.getElementById("filter").addEventListener("click", function (event) {
+    event.preventDefault();
+    clearScreen();
+  });
 
   document.getElementById('topGames').addEventListener('click', (event)=> {
     //Keep searching for the parent node to register the correct click
@@ -123,4 +121,14 @@ function selectId(string, separator) {
   //we join the separatedArray with empty string
   const finalId = separatedArray[separatedArray.length - 1];
   return finalId;
+}
+
+function showLogin() {
+  document.getElementById("filter").style.display = "flex";
+  document.getElementById("loginScreen").style.display = "flex";
+}
+
+function clearScreen(){
+  document.getElementById("filter").style.display = "none";
+  document.getElementById("loginScreen").style.display = "none";
 }
