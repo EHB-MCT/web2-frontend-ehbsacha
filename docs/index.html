@@ -35,6 +35,9 @@
     <a class="navGroup" id="login" value="Login">
       <button>Login</button><button><i class="fas fa-user fa-2x"></i></button>
     </a>
+    <a class="navGroup" id="loggedin" value="Login">
+      <button>account</button><button><i class="fas fa-user fa-2x"></i></button>
+    </a>
   </nav>
   <div id="filter"></div>
   
@@ -49,6 +52,7 @@
         <input type="text" name="loginName" id="loginName" required>
         <p>password</p>
         <input type="password" name="loginPassword" id="loginPassword" required>
+        <p class="error" id="loginError">You filed in something wrong!</p>
         <input type="submit" name="loginSubmit" id="loginSubmit" value="login">
       </form>
     </div>
@@ -61,6 +65,7 @@
         <input type="password" name="signupPassword" id="signupPassword" required>
         <p>email</p>
         <input type="email" name="signupEmail" id="signupEmail" required>
+        <p class="error" id="signupError">You filed in something wrong!</p>
         <input type="submit" name="signupSubmit" id="signupSubmit" value="signup">
       </form>
     </div>
