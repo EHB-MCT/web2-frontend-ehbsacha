@@ -6,13 +6,13 @@ var popularGames = [];
 
 window.onload = async function(){
     topGames = await fetchData(`https://api.boardgameatlas.com/api/search?order_by=rank&limit=12&ascending=false&${apiKey}`); // Fetch the top 8 games
-    buildList(topGames.games, 'topGames')
+    buildList(topGames.games, 'topGames');
+    console.log(topGames);
     popularGames = await fetchData(`https://api.boardgameatlas.com/api/search?order_by=rank&limit=7&ascending=false&${apiKey}`); // Fetch the top 8 reddit mentioned games
     buildList(popularGames.games, 'popularGames');
-    console.log(topGames.games);
-    console.log(popularGames.games);
 
-    
+    selectBackground(topGames.games[0], "bannerTopGames");
+    selectBackground(popularGames.games[0], "bannerPopularGames");
 }
 
 async function fetchData(someUrl){
@@ -54,6 +54,11 @@ function buildList(games, htmlId){
 
   }
   document.getElementById(htmlId).innerHTML = html;
+}
+
+function selectBackground(game,id) {
+  console.log(game);
+  document.getElementById(id).style.backgroundImage = "url"+(game.image_url);
 }
 
 function deString(string, separator){
