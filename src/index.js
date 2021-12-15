@@ -64,12 +64,12 @@ function buildList(games, htmlId){
 
 // Change background img to the first boardgame of this place on the site
 function selectBackground(game,id) {
-  console.log(game.image_url);
   document.getElementById(id).style.backgroundImage = `url('${game.image_url}')`;
 }
 
 function checkElements() {
-  // If you click on login button in the navigation show or hide the forms
+  // Login and signup
+  // If you click on login button in the navigation, show or hide the forms
   document.getElementById("login").addEventListener("click", function (event) {
     event.preventDefault();
     if(document.getElementById("filter").style.display == "flex"){
@@ -78,10 +78,18 @@ function checkElements() {
       showLogin();
     }
   });
-
+  // if you click on the white background the login and signup forms close
   document.getElementById("filter").addEventListener("click", function (event) {
     event.preventDefault();
     clearScreen();
+  });
+
+  document.getElementById("loginSubmit").addEventListener("click", function (event) {
+    event.preventDefault();
+    var name = document.getElementById("loginName").value;
+    var password = document.getElementById("loginPassword").value;
+    var json = {"userName": name, "userPassword": password};
+    console.log(name, password);
   });
 
   document.getElementById('topGames').addEventListener('click', (event)=> {

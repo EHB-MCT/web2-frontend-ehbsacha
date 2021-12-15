@@ -63,6 +63,12 @@ form input {
   height: 25px;
 }
 
+form input[type=submit] {
+  margin: 20px 0 0 50%;
+  height: 25px;
+  width: 50%;
+}
+
 form h1 {
   margin: 0 0 35px 0
 }
