@@ -5,14 +5,20 @@ var topGames = [];
 var popularGames = [];
 
 window.onload = async function(){
-    topGames = await fetchData(`https://api.boardgameatlas.com/api/search?order_by=rank&limit=12&ascending=false&${apiKey}`); // Fetch the top 8 games
-    buildList(topGames.games, 'topGames');
-    console.log(topGames);
-    popularGames = await fetchData(`https://api.boardgameatlas.com/api/search?order_by=rank&limit=7&ascending=false&${apiKey}`); // Fetch the top 8 reddit mentioned games
-    buildList(popularGames.games, 'popularGames');
+  // fetch top games
+  topGames = await fetchData(`https://api.boardgameatlas.com/api/search?order_by=rank&limit=12&ascending=false&${apiKey}`); // Fetch the top 8 games
+  buildList(topGames.games, 'topGames'); // Place the games on the page
 
-    selectBackground(topGames.games[0], "bannerTopGames");
-    selectBackground(popularGames.games[0], "bannerPopularGames");
+  // fetch popular games
+  popularGames = await fetchData(`https://api.boardgameatlas.com/api/search?order_by=rank&limit=7&ascending=false&${apiKey}`); // Fetch the top 8 reddit mentioned games
+  buildList(popularGames.games, 'popularGames'); // Place the games on the page
+
+  // Set correct images as background
+  selectBackground(topGames.games[0], "bannerTopGames"); // Topgames background
+  selectBackground(popularGames.games[0], "bannerPopularGames"); // Populargames backgound
+
+  // After initialising open eventlistners
+  checkElements();
 }
 
 async function fetchData(someUrl){
@@ -32,13 +38,13 @@ function buildList(games, htmlId){
   for(let game of games){
       var newString = deString(game.handle, "-");
       html += `
-      <div class="game">
+      <div class="game" value="${game.id}">
         <div class="name"><p>${newString}</p></div>
         <div class="data">
           <p class="rating">${game.rank}</p>
           <div class="buttons">
-            <button class="wishlist"><i class="fas fa-heart fa-2x" id=fav_${game.id}></i></button>
-            <button class="shelf"><i class="fas fa-bookmark fa-2x"></i></button>
+            <button class="wishlist"><i class="fas fa-heart fa-2x" id="top_like_${game.id}"></i></button>
+            <button class="shelf"><i class="fas fa-bookmark fa-2x" id="top_shelf_${game.id}"></i></button>
           </div>
           <img src="${game.image_url}" alt="Scythe">
           <div class="bottomBar">
@@ -57,8 +63,34 @@ function buildList(games, htmlId){
 }
 
 function selectBackground(game,id) {
-  console.log(game);
   document.getElementById(id).style.backgroundImage = "url"+(game.image_url);
+}
+
+function checkElements() {
+  document.getElementById('topGames').addEventListener('click', (event)=> {
+    //Keep searching for the parent node to register the correct click
+    const likeId = event.target.className.indexOf('game');
+    // console.log(likeId);
+    // console.log(event.target.id);
+  
+    if(likeId){
+      if(event.target.className.indexOf('heart') !== -1){
+        console.log('like');
+        var newid = selectId(event.target.id, "_");
+        console.log(newid);
+
+      }
+      
+      if(event.target.className.indexOf('bookmark') !== -1){
+        console.log('bookmark');
+        var newid = selectId(event.target.id, "_");
+        console.log(newid);
+        
+      }
+
+    }
+
+  });
 }
 
 function deString(string, separator){
@@ -67,4 +99,12 @@ function deString(string, separator){
   //we join the separatedArray with empty string
   const separatedString = separatedArray.join(" ");
   return separatedString;
+}
+
+function selectId(string, separator) {
+  //we split the string and make it free of separator
+  const separatedArray = string.split(separator);
+  //we join the separatedArray with empty string
+  const finalId = separatedArray[separatedArray.length - 1];
+  return finalId;
 }
