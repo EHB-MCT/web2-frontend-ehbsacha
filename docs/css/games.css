@@ -12,8 +12,8 @@
 
 
 /* The game block flexbox */
-#games,
-#games2 {
+#topGames,
+#popularGames {
   margin: 0 5% 50px;
   width: 90%;
   display: flex;
@@ -23,12 +23,12 @@
 }
 
 .game {
-  min-width: 250px;
-  max-width: 18vw;
+  width: 325px;
+  max-width: 325px;
   position: relative;
   width: auto;
   height: auto;
-  margin: 1% 0 5vh;
+  margin: 2% 1%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -77,12 +77,12 @@
 }
 
 .shelf {
-  right: 40px;
+  right: 0px;
   background-color: #33669A;
 }
 
 .wishlist {
-  right: 0px;
+  right: 40px;
   background-color: #9BC1E7;
 }
 
@@ -113,6 +113,6 @@
 
 .game img {
   object-fit: contain;
-  width: 18vw;
+  width: 325px;
   height: 25vh;
 }

@@ -1,13 +1,18 @@
 'use strict';
 
 const apiKey = "client_id=5UGynejyAW";
-var topgames = [];
+var topGames = [];
+var popularGames = [];
 
 window.onload = async function(){
-    topgames = await fetchData(`https://api.boardgameatlas.com/api/search?order_by=rank&limit=8&ascending=false&${apiKey}`);
-    // populargames = await fetchData(`https://api.boardgameatlas.com/api/search?order_by=rank&limit=8&ascending=false&${apiKey}`); Already for popular
-    console.log(topgames.games);
-    buildList();
+    topGames = await fetchData(`https://api.boardgameatlas.com/api/search?order_by=rank&limit=12&ascending=false&${apiKey}`); // Fetch the top 8 games
+    buildList(topGames.games, 'topGames')
+    popularGames = await fetchData(`https://api.boardgameatlas.com/api/search?order_by=rank&limit=7&ascending=false&${apiKey}`); // Fetch the top 8 reddit mentioned games
+    buildList(popularGames.games, 'popularGames');
+    console.log(topGames.games);
+    console.log(popularGames.games);
+
+    
 }
 
 async function fetchData(someUrl){
@@ -15,7 +20,7 @@ async function fetchData(someUrl){
       .then(response => response.json());
 }
 
-function buildList(){
+function buildList(games, htmlId){
   // Order the list, now its ordered on the user rating
   // games.sort(function(a,b) {
   //     return b.average_user_rating - a.average_user_rating;
@@ -24,7 +29,7 @@ function buildList(){
   //Change the innerHTML of the page
   let html = '';
   //Make a for loop to pass all the games who are needed to be displayed
-  for(let game of topgames.games){
+  for(let game of games){
       var newString = deString(game.handle, "-");
       html += `
       <div class="game">
@@ -32,7 +37,7 @@ function buildList(){
         <div class="data">
           <p class="rating">${game.rank}</p>
           <div class="buttons">
-            <button class="wishlist"><i class="fas fa-heart fa-2x"></i></button>
+            <button class="wishlist"><i class="fas fa-heart fa-2x" id=fav_${game.id}></i></button>
             <button class="shelf"><i class="fas fa-bookmark fa-2x"></i></button>
           </div>
           <img src="${game.image_url}" alt="Scythe">
@@ -48,8 +53,7 @@ function buildList(){
     // ${Math.round(game.average_learning_complexity * 100) / 100}
 
   }
-  document.getElementById('games').innerHTML = html;
-  document.getElementById('games2').innerHTML = html;
+  document.getElementById(htmlId).innerHTML = html;
 }
 
 function deString(string, separator){
