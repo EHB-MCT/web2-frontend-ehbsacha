@@ -20,7 +20,8 @@ nav .navGroup {
   padding: 10px 30px;
 }
 
-.navGroup button {
+.navGroup button,
+.navGroup a {
   font-size: 18px;
   background-color: white;
   border: none;
@@ -35,32 +36,4 @@ nav .navGroup {
 .navGroup img {
   height: 2vw;
   width: auto;
-}
-
-/* Login dropdown */
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
-
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #9BC1E7;
-  width: 100%;
-  margin: 10px 0 0 0;
-  right: 0;
-  height: 100px;
-}
-
-.dropdown:hover .dropdown-content {
-  align-self: center;
-  display: flex;
-  flex-direction: column;
-}
-
-.dropdown a {
-  padding-top: 12.5px;
-  height: 100%;
-  width: 100%;
 }

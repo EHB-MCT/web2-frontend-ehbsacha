@@ -1,0 +1,41 @@
+#filter {
+  display: none;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  background: rgba(255, 255, 255, 0.8);
+  z-index: 1;
+}
+
+.loginpopup,
+.signuppopup {
+  position: fixed;
+  display: flex;
+  background-color: white;
+  border: rgba(152, 160, 168, 0.808) 1px solid;
+  border-radius: 20px;
+  width: 30%;
+  z-index: 2;
+}
+
+.loginpopup form,
+.signuppopup form {
+  width: 80%;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+}
+
+.loginpopup {
+  margin: 15% 0 0 15%;
+}
+
+.signuppopup {
+  margin: 15% 0 0 55%;
+}
+
+form input {
+  margin: 5px 0 20px;
+  height: 25px;
+}

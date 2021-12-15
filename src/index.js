@@ -10,16 +10,16 @@ window.onload = async function(){
   buildList(topGames.games, 'topGames'); // Place the games on the page
 
   // fetch popular games
-  popularGames = await fetchData(`https://api.boardgameatlas.com/api/search?order_by=rank&limit=7&ascending=false&${apiKey}`); // Fetch the top 8 reddit mentioned games
+  popularGames = await fetchData(`https://api.boardgameatlas.com/api/search?order_by=rank&limit=7&adescending=false&${apiKey}`); // Fetch the top 8 reddit mentioned games
   buildList(popularGames.games, 'popularGames'); // Place the games on the page
 
   // Set correct images as background
-  selectBackground(topGames.games[0], "bannerTopGames"); // Topgames background
-  selectBackground(popularGames.games[0], "bannerPopularGames"); // Populargames backgound
+  selectBackground(topGames.games[1], "bannerTopGames"); // Topgames background
+  selectBackground(popularGames.games[2], "bannerPopularGames"); // Populargames backgound
 
   // After initialising open eventlistners
   checkElements();
-}
+};
 
 async function fetchData(someUrl){
   return await fetch(someUrl)
@@ -62,11 +62,30 @@ function buildList(games, htmlId){
   document.getElementById(htmlId).innerHTML = html;
 }
 
+// Change background img to the first boardgame of this place on the site
 function selectBackground(game,id) {
-  document.getElementById(id).style.backgroundImage = "url"+(game.image_url);
+  console.log(game.image_url);
+  document.getElementById(id).style.backgroundImage = `url('${game.image_url}')`;
 }
 
 function checkElements() {
+  // If you click on login button in the navigation show or hide the forms
+  document.getElementById("login").addEventListener("click", function (event) {
+    event.preventDefault();
+    if(document.getElementById("filter").style.display == "flex"){
+      document.getElementById("filter").style.display = "none";
+    }else{
+      document.getElementById("filter").style.display = "flex";
+    }
+  });
+
+  // document.getElementById("filter").addEventListener("click", function (event) {
+  //   event.preventDefault();
+  //   document.getElementById("filter").style.display = "none";
+  //   document.getElementById("loginpopup").style.display = "none";
+  //   document.getElementById("signuppopup").style.display = "none";
+  // });
+
   document.getElementById('topGames').addEventListener('click', (event)=> {
     //Keep searching for the parent node to register the correct click
     const likeId = event.target.className.indexOf('game');
@@ -75,21 +94,18 @@ function checkElements() {
   
     if(likeId){
       if(event.target.className.indexOf('heart') !== -1){
-        console.log('like');
         var newid = selectId(event.target.id, "_");
-        console.log(newid);
+        console.log('like', newid);
 
       }
       
       if(event.target.className.indexOf('bookmark') !== -1){
-        console.log('bookmark');
         var newid = selectId(event.target.id, "_");
-        console.log(newid);
-        
+        console.log('bookmark', newid);
+
       }
 
     }
-
   });
 }
 

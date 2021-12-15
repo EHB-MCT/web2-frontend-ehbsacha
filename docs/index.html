@@ -32,35 +32,32 @@
       <button><i class="fas fa-search fa-2x"></i>
       </button>
     </div>
-    <div class="navGroup dropdown">
-      <button id="login">Login</button><button><i class="fas fa-user fa-2x"></i>
-        <div class="dropdown-content">
-          <a id="login">Login</a>
-          <a id="signup">Signup</a>
-        </div>
-      </button>
-      
-    </div>
+    <a class="navGroup" id="login" value="Login">
+      <button>Login</button><button><i class="fas fa-user fa-2x"></i></button>
+    </a>
   </nav>
-  <!-- <div id="games">
-    <div class="game">
-      <p class="name">Scyte</p>
-      <div class="data">
-        <p class="rating">1</p>
-        <div class="buttons">
-          <button class="shelf">s</button>
-          <button class="wishlist">w</button>
-        </div>
-        <img src="https://cdn.shopify.com/s/files/1/0513/4077/1515/products/scythe-board-game.jpg?v=1611090922" alt="Scythe">
-        <div class="bottomBar">
-          <p class="players">1-4</p>
-          <p class="duration">4.6</p>
-          <p class="age">15+</p>
-        </div>
-      </div>
+  <div id="filter">
+    <div class="loginpopup">
+      <form action="#" id="loginForm">
+        <p>name</p>
+        <input type="text" name="loginName" id="loginName">
+        <p>password</p>
+        <input type="password" name="loginPassword" id="loginPassword">
+        <input type="submit" name="loginSubmit" id="loginSubmit">
+      </form>
     </div>
-  </div> -->
-  <!-- <div id="filter"></div> -->
+    <div class="signuppopup" id="signupForm">
+      <form action="#">
+        <p>name</p>
+        <input type="text" name="signupName" id="signupName">
+        <p>password</p>
+        <input type="password" name="signupPassword" id="signupPassword">
+        <p>email</p>
+        <input type="email" name="signupEmail" id="signupEmail">
+        <input type="submit" name="signupSubmit" id="signupSubmit">
+      </form>
+    </div>
+  </div>
   <div id="tekstVlak"></div>
   <div class="navHeight"></div>
   <p class="title">Top games</p>
