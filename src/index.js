@@ -1,5 +1,9 @@
 'use strict';
 
+const heroku = "https://web2-gameheaven-ehbsacha.herokuapp.com/";
+const localhost = "http://localhost:3000/";
+var link = localhost;
+
 // variables
 const apiKey = "client_id=5UGynejyAW"; //apiKey
 var topGames = []; // Array for topGames
@@ -9,6 +13,7 @@ window.onload = async function(){
   if(!localStorage.getItem("userId")){ // If userId doesn't exist
     localStorage.setItem("userId", ""); // initialise the userId in localstorage
   }
+  // localStorage.setItem("userId", "");
   console.log(localStorage.getItem("userId"));
 
   // Setup navbar (loggedin or not)
@@ -156,7 +161,7 @@ function clearScreen(){ // Hides everything unnecessary
 async function login() {
   try{ // Try to fetch
     // I have skipped the varables for privacy reasons
-    var url = `https://web2-gameheaven-ehbsacha.herokuapp.com/user?name=${document.getElementById("loginName").value}&password=${document.getElementById("loginPassword").value}`;
+    var url = `${link}user?name=${document.getElementById("loginName").value}&password=${document.getElementById("loginPassword").value}`;
     const loggedIn = await fetchData(url,{method: 'GET'}); // Do the fetch and store return in loggedIn
     console.log(loggedIn[0]);
     saveId(loggedIn); // If already gotten to here login is succesfull and your id gets saved local
@@ -168,7 +173,7 @@ async function login() {
 async function signup() {
   try{ // Try to fetch
     // I have skipped the varables for privacy reasons
-    var signupUrl = `https://web2-gameheaven-ehbsacha.herokuapp.com/user`;
+    var signupUrl = `${link}user`;
     const prepared = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -177,28 +182,10 @@ async function signup() {
         password: `${document.getElementById("signupPassword").value}`,
         email: `${document.getElementById("signupEmail").value}`
       })};
-    var loggedIn;
-    var something = await fetchData(signupUrl,prepared)
-      .then( async function(e) {
-        // setTimeout('', 5000);
-        var loginUrl = `https://web2-gameheaven-ehbsacha.herokuapp.com/user?name=${document.getElementById("signupName").value}&password=${document.getElementById("signupPassword").value}`;
-        loggedIn = await fetchData(loginUrl,{method: 'GET'});
-        console.log(loggedIn);
-        saveId(loggedIn);
-      }); // Do the fetch to create user 
-
-    // fetch user if user is created and if user already existed new user can't login because of password
-    
-    // console.log(created);
-    // console.log(created[0]);
-    // saveId(created); // If already gotten to here login is succesfull and your id gets saved local
+    const created = await fetchData(signupUrl, prepared);
+    console.log(created);
+    saveId(created);
   }catch(err){
-    // setTimeout('', 5000);
-    var loginUrl = `https://web2-gameheaven-ehbsacha.herokuapp.com/user?name=${document.getElementById("signupName").value}&password=${document.getElementById("signupPassword").value}`;
-    loggedIn = await fetchData(loginUrl,{method: 'GET'});
-    console.log(loggedIn);
-    await saveId(loggedIn);
-    console.log(err);
     document.getElementById("signupError").style.display = "flex"; // If you typed something wrong throw error
   }
 }
