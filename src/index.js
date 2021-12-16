@@ -98,6 +98,12 @@ async function checkElements() {
     login();
   });
 
+  // If you click on the signupsubmit do login action
+  document.getElementById("signupSubmit").addEventListener("click", function (event) {
+    event.preventDefault();
+    signup();
+  });
+
   // Check for clicks in the chosen field, in this case for likes and shelf clicks
   document.getElementById('topGames').addEventListener('click', (event)=> {
     //Keep searching for the parent node to register the correct click
@@ -156,6 +162,44 @@ async function login() {
     saveId(loggedIn); // If already gotten to here login is succesfull and your id gets saved local
   }catch(err){ 
     document.getElementById("loginError").style.display = "flex"; // If you typed something wrong throw error
+  }
+}
+
+async function signup() {
+  try{ // Try to fetch
+    // I have skipped the varables for privacy reasons
+    var signupUrl = `https://web2-gameheaven-ehbsacha.herokuapp.com/user`;
+    const prepared = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: `${document.getElementById("signupName").value}`,
+        password: `${document.getElementById("signupPassword").value}`,
+        email: `${document.getElementById("signupEmail").value}`
+      })};
+    var loggedIn;
+    var something = await fetchData(signupUrl,prepared)
+      .then( async function(e) {
+        // setTimeout('', 5000);
+        var loginUrl = `https://web2-gameheaven-ehbsacha.herokuapp.com/user?name=${document.getElementById("signupName").value}&password=${document.getElementById("signupPassword").value}`;
+        loggedIn = await fetchData(loginUrl,{method: 'GET'});
+        console.log(loggedIn);
+        saveId(loggedIn);
+      }); // Do the fetch to create user 
+
+    // fetch user if user is created and if user already existed new user can't login because of password
+    
+    // console.log(created);
+    // console.log(created[0]);
+    // saveId(created); // If already gotten to here login is succesfull and your id gets saved local
+  }catch(err){
+    // setTimeout('', 5000);
+    var loginUrl = `https://web2-gameheaven-ehbsacha.herokuapp.com/user?name=${document.getElementById("signupName").value}&password=${document.getElementById("signupPassword").value}`;
+    loggedIn = await fetchData(loginUrl,{method: 'GET'});
+    console.log(loggedIn);
+    await saveId(loggedIn);
+    console.log(err);
+    document.getElementById("signupError").style.display = "flex"; // If you typed something wrong throw error
   }
 }
 
