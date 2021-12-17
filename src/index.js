@@ -1,8 +1,8 @@
 'use strict';
 
-// ----------------------------- //
-// The express api I need to use //
-// ----------------------------- //
+// --------------------- //
+// The express api I use //
+// --------------------- //
 const heroku = "https://web2-gameheaven-ehbsacha.herokuapp.com/";
 const localhost = "http://localhost:3000/";
 var link = heroku;
@@ -98,85 +98,7 @@ function selectBackground(game,id) { // Change background img to the first board
   document.getElementById(id).style.backgroundImage = `url('${game.image_url}')`;
 }
 
-// -------------- //
-// Event listners //
-// -------------- //
-async function checkElements() { // After initialising open eventlistners
-  
-  // if you click on the white background the login and signup forms close
-  document.getElementById("filter").addEventListener("click", function (event) {
-    event.preventDefault();
-    clearScreen();
-  });
-  
-  // --------------- //
-  // Account related //
-  // --------------- //
 
-  // Only listen to these buttons if no local token is saved
-  if(!localStorage.getItem("userId")){ // Not logged in
-    // Login and signup
-    // If you click on login button in the navigation, show or hide the forms no login of signup
-    document.getElementById("login").addEventListener("click", function (event) {
-      event.preventDefault();
-      if(document.getElementById("filter").style.display == "flex"){
-        clearScreen(); // If the login sceen is open close it
-      }else{
-        showLogin(); // If the login screen in closed open it
-      }
-    });
-
-    // If you click on the loginsubmit do login action
-    document.getElementById("loginSubmit").addEventListener("click", function (event) {
-      event.preventDefault();
-      login();
-    });
-    
-    // If you click on the signupsubmit do login action
-    document.getElementById("signupSubmit").addEventListener("click", function (event) {
-      event.preventDefault();
-      signup();
-    });
-  }
-  // Only listen to these buttons if local token is saved
-  if(localStorage.getItem("userId")){ // Logged in
-    // If you click on account button in the navigation, show or hide the forms to change password or name
-    document.getElementById("loggedin").addEventListener("click", function (event) {
-      event.preventDefault();
-      if(document.getElementById("filter").style.display == "flex"){
-        clearScreen(); // If the login sceen is open close it
-      }else{
-        showLoggedIn(); // If the login screen in closed open it
-      }
-    });
-  }
-
-  // ---------------------- //
-  // Like and shelf related //
-  // ---------------------- //
-
-  // Check for clicks in the chosen field, in this case for likes and shelf clicks
-  document.getElementById('topGames').addEventListener('click', (event)=> {
-    //Keep searching for the parent node to register the correct click
-    const likeId = event.target.className.indexOf('game');
-    // console.log(likeId);
-    // console.log(event.target.id);
-  
-    if(likeId){
-      // If the something which is clicked is has the word heart in the classname get the id and like or unlike the game
-      if(event.target.className.indexOf('heart') !== -1){
-        var newid = selectId(event.target.id, "-"); // Get the id by removing the prefixes
-        console.log('like', newid);
-      }
-      
-      // If the something which is clicked is has the word bookmark in the classname get the id and shelf or unshelf the game
-      if(event.target.className.indexOf('bookmark') !== -1){
-        var newid = selectId(event.target.id, "-"); // Get the id by removing the prefixes
-        console.log('bookmark', newid);
-      }
-    }
-  });
-}
 
 // ------------------- //
 // seperator functions //
@@ -229,7 +151,6 @@ async function login() { // Login function gets called when clicking login and d
 
 async function signup() { // Signup happens If name is not taken, then use same data to login
   try{ // Try to fetch
-    // I have skipped the varables for privacy reasons
     var signupUrl = `${link}user`;
     const prepared = {
       method: 'POST',
@@ -247,7 +168,137 @@ async function signup() { // Signup happens If name is not taken, then use same 
   }
 }
 
+async function newName() {
+  try{ // Try to fetch
+    var signupUrl = `${link}user/name`;
+    const prepared = {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: `${document.getElementById("changeNameName").value}`,
+        password: `${document.getElementById("changeNamePassword").value}`,
+        newName: `${document.getElementById("newName").value}`,
+        _id: localStorage.getItem("userId")
+      })};
+    await fetchData(signupUrl, prepared).then(window.location.reload(true));
+  }catch(err){
+    console.log(err);
+    document.getElementById("newNameError").style.display = "flex"; // If you typed something wrong throw error
+  }
+}
+
+async function newPassword() {
+  try{ // Try to fetch
+    var signupUrl = `${link}user/password`;
+    const prepared = {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: `${document.getElementById("changePasswordName").value}`,
+        password: `${document.getElementById("changePasswordPassword").value}`,
+        newPassword: `${document.getElementById("newPassword").value}`,
+        _id: localStorage.getItem("userId")
+      })};
+    await fetchData(signupUrl, prepared).then(window.location.reload(true));
+  }catch(err){
+    console.log(err);
+    document.getElementById("newPasswordError").style.display = "flex"; // If you typed something wrong throw error
+  }
+}
+
 function saveId(userData){ // If login or signup is succes save id in local token
   localStorage.setItem("userId", userData[0]._id); // Save the userId so it counts as loggedIn
   window.location.reload(true);
+}
+
+// -------------- //
+// Event listners //
+// -------------- //
+async function checkElements() { // After initialising open eventlistners
+  
+  // if you click on the white background the login and signup forms close
+  document.getElementById("filter").addEventListener("click", function (event) {
+    event.preventDefault();
+    clearScreen();
+  });
+  
+  // --------------- //
+  // Account related //
+  // --------------- //
+
+  // Only listen to these buttons if no local token is saved
+  if(!localStorage.getItem("userId")){ // Not logged in
+    // Login and signup
+    // If you click on login button in the navigation, show or hide the forms no login of signup
+    document.getElementById("login").addEventListener("click", function (event) {
+      event.preventDefault();
+      if(document.getElementById("filter").style.display == "flex"){
+        clearScreen(); // If the login sceen is open close it
+      }else{
+        showLogin(); // If the login screen in closed open it
+      }
+    });
+
+    // If you click on the loginsubmit do login action
+    document.getElementById("loginSubmit").addEventListener("click", function (event) {
+      event.preventDefault();
+      login();
+    });
+    
+    // If you click on the signupsubmit do login action
+    document.getElementById("signupSubmit").addEventListener("click", function (event) {
+      event.preventDefault();
+      signup();
+    });
+  }
+  // Only listen to these buttons if local token is saved
+  if(localStorage.getItem("userId")){ // Logged in
+    // If you click on account button in the navigation, show or hide the forms to change password or name
+    document.getElementById("loggedin").addEventListener("click", function (event) {
+      event.preventDefault();
+      if(document.getElementById("filter").style.display == "flex"){
+        clearScreen(); // If the login sceen is open close it
+      }else{
+        showLoggedIn(); // If the login screen in closed open it
+      }
+    });
+
+    // If you click on the signupsubmit do login action
+    document.getElementById("newNameSubmit").addEventListener("click", function (event) {
+      event.preventDefault();
+      newName();
+    });
+
+    // If you click on the loginsubmit do login action
+    document.getElementById("newPasswordSubmit").addEventListener("click", function (event) {
+      event.preventDefault();
+      newPassword();
+    });
+  }
+
+  // ---------------------- //
+  // Like and shelf related //
+  // ---------------------- //
+
+  // Check for clicks in the chosen field, in this case for likes and shelf clicks
+  document.getElementById('topGames').addEventListener('click', (event)=> {
+    //Keep searching for the parent node to register the correct click
+    const likeId = event.target.className.indexOf('game');
+    // console.log(likeId);
+    // console.log(event.target.id);
+  
+    if(likeId){
+      // If the something which is clicked is has the word heart in the classname get the id and like or unlike the game
+      if(event.target.className.indexOf('heart') !== -1){
+        var newid = selectId(event.target.id, "-"); // Get the id by removing the prefixes
+        console.log('like', newid);
+      }
+      
+      // If the something which is clicked is has the word bookmark in the classname get the id and shelf or unshelf the game
+      if(event.target.className.indexOf('bookmark') !== -1){
+        var newid = selectId(event.target.id, "-"); // Get the id by removing the prefixes
+        console.log('bookmark', newid);
+      }
+    }
+  });
 }

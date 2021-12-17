@@ -56,12 +56,12 @@
 }
 
 .loginPopup,
-.changePasswordPopup {
+.changeNamePopup {
   margin: 15% 0 0 15%;
 }
 
 .signupPopup,
-.changeNamePopup {
+.changePasswordPopup {
   margin: 15% 0 0 55%;
 }
 
@@ -85,7 +85,9 @@ form h1 {
 }
 
 #loginError,
-#signupError {
+#signupError,
+#newNameError,
+#newPasswordError {
   display: none;
 }
 

@@ -65,7 +65,7 @@
         <input type="password" name="signupPassword" id="signupPassword" required>
         <p>email</p>
         <input type="email" name="signupEmail" id="signupEmail" required>
-        <p class="error" id="signupError">You filed in something wrong!</p>
+        <p class="error" id="signupError">You filed in something wrong or username is already taken!</p>
         <input type="submit" name="signupSubmit" id="signupSubmit" value="signup">
       </form>
     </div>
@@ -75,19 +75,6 @@
     <div class="exitScreen">
       <p>Press anywhere to exit!</p>
     </div>
-    <div class="changePasswordPopup" id="changePasswordForm">
-      <form action="#">
-        <h1>Change password</h1>
-        <p>name</p>
-        <input type="text" name="changePasswordName" id="changePasswordName" required>
-        <p>password</p>
-        <input type="password" name="changePasswordPassword" id="changePasswordPassword" required>
-        <p>email</p>
-        <input type="email" name="newPassword" id="newPassword" required>
-        <p class="error" id="signupError">You filed in something wrong!</p>
-        <input type="submit" name="newPasswordSubmit" id="newPasswordSubmit" value="update password">
-      </form>
-    </div>
     <div class="changeNamePopup" id="changeNameForm">
       <form action="#">
         <h1>Change name</h1>
@@ -95,10 +82,23 @@
         <input type="text" name="changeNameName" id="changeNameName" required>
         <p>password</p>
         <input type="password" name="changeNamePassword" id="changeNamePassword" required>
-        <p>email</p>
-        <input type="email" name="changeNameEmail" id="changeNameEmail" required>
-        <p class="error" id="signupError">You filed in something wrong!</p>
+        <p>new name</p>
+        <input type="text" name="newName" id="newName" required>
+        <p class="error" id="newNameError">Username already taken!</p>
         <input type="submit" name="newNameSubmit" id="newNameSubmit" value="update name">
+      </form>
+    </div>
+    <div class="changePasswordPopup" id="changePasswordForm">
+      <form action="#">
+        <h1>Change password</h1>
+        <p>name</p>
+        <input type="text" name="changePasswordName" id="changePasswordName" required>
+        <p>password</p>
+        <input type="password" name="changePasswordPassword" id="changePasswordPassword" required>
+        <p>new password</p>
+        <input type="password" name="newPassword" id="newPassword" required>
+        <p class="error" id="newPasswordError">You filed in something wrong!</p>
+        <input type="submit" name="newPasswordSubmit" id="newPasswordSubmit" value="update password">
       </form>
     </div>
   </div>
