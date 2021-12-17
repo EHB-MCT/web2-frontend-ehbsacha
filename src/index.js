@@ -1,27 +1,39 @@
 'use strict';
 
+// ----------------------------- //
+// The express api I need to use //
+// ----------------------------- //
 const heroku = "https://web2-gameheaven-ehbsacha.herokuapp.com/";
 const localhost = "http://localhost:3000/";
-var link = localhost;
+var link = heroku;
 
-// variables
+// --------- //
+// Variables //
+// --------- //
 const apiKey = "client_id=5UGynejyAW"; //apiKey
 var topGames = []; // Array for topGames
 var popularGames = []; // Array for popular games
 
-window.onload = async function(){
-  if(!localStorage.getItem("userId")){ // If userId doesn't exist
-    localStorage.setItem("userId", ""); // initialise the userId in localstorage
-  }
-  // localStorage.setItem("userId", "");
-  console.log(localStorage.getItem("userId"));
+// ------------ //
+// On page load //
+// ------------ //
+window.onload = async function(){ // On page load starts with all these items
 
+  // ------------------------ //
+  // logged in related navbar //
+  // ------------------------ //
+
+  console.log(localStorage.getItem("userId"));
   // Setup navbar (loggedin or not)
-  if(localStorage.getItem("userId") != ""){
+  if(localStorage.getItem("userId")){
     document.getElementById("login").style.display = "none";
     document.getElementById("loggedin").style.display = "flex";
   }
 
+  // --------------------------- //
+  // Setup games fetch and place //
+  // --------------------------- //
+  
   // fetch top games
   topGames = await fetchData(`https://api.boardgameatlas.com/api/search?order_by=rank&limit=12&ascending=false&${apiKey}`); // Fetch the top 8 games
   buildList(topGames.games, 'topGames', "top"); // Place the games on the page
@@ -34,18 +46,27 @@ window.onload = async function(){
   selectBackground(topGames.games[1], "bannerTopGames"); // Topgames background
   selectBackground(popularGames.games[2], "bannerPopularGames"); // Populargames backgound
 
+
+  // ----------------------- //
+  // After the setup is done //
+  // ----------------------- //
+
   // After initialising open eventlistners
   checkElements(); // activate eventListners
 };
 
-// A reusable fetch function
-async function fetchData(someUrl, method){
+// ----------------------- //
+// Reusable fetch function //
+// ----------------------- //
+async function fetchData(someUrl, method){ // Fetch the required data
   return await fetch(someUrl, method) // Return the value after fetch is done
       .then(response => response.json()); // Make the returned readable
 }
 
-// Build the list of games to put in the html and make them visible
-function buildList(games, htmlId, partOfSite){
+// ----------------------------- //
+// Reusable site build functions //
+// ----------------------------- //
+function buildList(games, htmlId, partOfSite){ // Build the list of games to put in the html and make them visible
   //Change the innerHTML of the page
   let html = ''; // Start clean
   //Make a for loop to pass all the games who are needed to be displayed
@@ -73,41 +94,66 @@ function buildList(games, htmlId, partOfSite){
   document.getElementById(htmlId).innerHTML = html; // Put the builded games list into the right place in html with the corensponding id
 }
 
-// Change background img to the first boardgame of this place on the site
-function selectBackground(game,id) {
+function selectBackground(game,id) { // Change background img to the first boardgame of this place on the site
   document.getElementById(id).style.backgroundImage = `url('${game.image_url}')`;
 }
 
-// After initialising open eventlistners
-async function checkElements() {
-  // Login and signup
-  // If you click on login button in the navigation, show or hide the forms
-  document.getElementById("login").addEventListener("click", function (event) {
-    event.preventDefault();
-    if(document.getElementById("filter").style.display == "flex"){
-      clearScreen(); // If the login sceen is open close it
-    }else{
-      showLogin(); // If the login screen in closed open it
-    }
-  });
-
+// -------------- //
+// Event listners //
+// -------------- //
+async function checkElements() { // After initialising open eventlistners
+  
   // if you click on the white background the login and signup forms close
   document.getElementById("filter").addEventListener("click", function (event) {
     event.preventDefault();
     clearScreen();
   });
+  
+  // --------------- //
+  // Account related //
+  // --------------- //
 
-  // If you click on the loginsubmit do login action
-  document.getElementById("loginSubmit").addEventListener("click", function (event) {
-    event.preventDefault();
-    login();
-  });
+  // Only listen to these buttons if no local token is saved
+  if(!localStorage.getItem("userId")){ // Not logged in
+    // Login and signup
+    // If you click on login button in the navigation, show or hide the forms no login of signup
+    document.getElementById("login").addEventListener("click", function (event) {
+      event.preventDefault();
+      if(document.getElementById("filter").style.display == "flex"){
+        clearScreen(); // If the login sceen is open close it
+      }else{
+        showLogin(); // If the login screen in closed open it
+      }
+    });
 
-  // If you click on the signupsubmit do login action
-  document.getElementById("signupSubmit").addEventListener("click", function (event) {
-    event.preventDefault();
-    signup();
-  });
+    // If you click on the loginsubmit do login action
+    document.getElementById("loginSubmit").addEventListener("click", function (event) {
+      event.preventDefault();
+      login();
+    });
+    
+    // If you click on the signupsubmit do login action
+    document.getElementById("signupSubmit").addEventListener("click", function (event) {
+      event.preventDefault();
+      signup();
+    });
+  }
+  // Only listen to these buttons if local token is saved
+  if(localStorage.getItem("userId")){ // Logged in
+    // If you click on account button in the navigation, show or hide the forms to change password or name
+    document.getElementById("loggedin").addEventListener("click", function (event) {
+      event.preventDefault();
+      if(document.getElementById("filter").style.display == "flex"){
+        clearScreen(); // If the login sceen is open close it
+      }else{
+        showLoggedIn(); // If the login screen in closed open it
+      }
+    });
+  }
+
+  // ---------------------- //
+  // Like and shelf related //
+  // ---------------------- //
 
   // Check for clicks in the chosen field, in this case for likes and shelf clicks
   document.getElementById('topGames').addEventListener('click', (event)=> {
@@ -132,33 +178,44 @@ async function checkElements() {
   });
 }
 
-// A function to remove the seperator and afterwards 
-function deString(string, separator){
+// ------------------- //
+// seperator functions //
+// ------------------- //
+function deString(string, separator){ // A function to remove the seperator and afterwards 
   const separatedArray = string.split(separator);// We split the string and make it free of separator
   const separatedString = separatedArray.join(" "); // We join the separatedArray with one space string
   return separatedString; // Return the value
 }
 
-// the difference with the one above is that thisone selects the last part instead of joining them together
-function selectId(string, separator) {
+function selectId(string, separator) { // the difference with the one above is that thisone selects the last part instead of joining them together
   const separatedArray = string.split(separator); // We split the string and make it free of separator
   const finalId = separatedArray[separatedArray.length - 1]; // Select the last part or the seperated array
   return finalId; // Return the value
 }
 
-// If loginbutton in the navbar gets clicked opens the login screen
-function showLogin() { // make parts of the site visibe
+// ------------------- //
+// Show and hide items //
+// ------------------- //
+function showLogin() { // If loginbutton in the navbar gets clicked opens the login screen
   document.getElementById("filter").style.display = "flex";
   document.getElementById("loginScreen").style.display = "flex";
+}
+
+function showLoggedIn() { // If account in the navbar gets clicked opens the change user data screen
+  document.getElementById("filter").style.display = "flex";
+  document.getElementById("loggedinScreen").style.display = "flex";
 }
 
 function clearScreen(){ // Hides everything unnecessary
   document.getElementById("filter").style.display = "none";
   document.getElementById("loginScreen").style.display = "none";
+  document.getElementById("loggedinScreen").style.display = "none";
 }
 
-// Login function gets called when clicking login and does a fetchcall to verify. If succes login else a error message
-async function login() {
+// -------------------------- //
+// Login and signup functions //
+// -------------------------- //
+async function login() { // Login function gets called when clicking login and does a fetchcall to verify. If succes login else a error message
   try{ // Try to fetch
     // I have skipped the varables for privacy reasons
     var url = `${link}user?name=${document.getElementById("loginName").value}&password=${document.getElementById("loginPassword").value}`;
@@ -170,7 +227,7 @@ async function login() {
   }
 }
 
-async function signup() {
+async function signup() { // Signup happens If name is not taken, then use same data to login
   try{ // Try to fetch
     // I have skipped the varables for privacy reasons
     var signupUrl = `${link}user`;
@@ -190,7 +247,7 @@ async function signup() {
   }
 }
 
-function saveId(userData){
+function saveId(userData){ // If login or signup is succes save id in local token
   localStorage.setItem("userId", userData[0]._id); // Save the userId so it counts as loggedIn
   window.location.reload(true);
 }

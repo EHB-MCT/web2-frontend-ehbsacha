@@ -8,7 +8,8 @@
   z-index: 1;
 }
 
-.loginScreen {
+.loginScreen,
+.loggedinScreen {
   display: none;
   flex-wrap: wrap;
 }
@@ -30,8 +31,10 @@
   z-index: 2;
 }
 
-.loginpopup,
-.signuppopup {
+.loginPopup,
+.signupPopup,
+.changePasswordPopup,
+.changeNamePopup {
   min-width: 400px;
   position: fixed;
   display: flex;
@@ -42,19 +45,23 @@
   z-index: 2;
 }
 
-.loginpopup form,
-.signuppopup form {
+.loginPopup form,
+.signupPopup form,
+.changePasswordPopup form,
+.changeNamePopup form {
   width: 100%;
   padding: 50px;
   display: flex;
   flex-direction: column;
 }
 
-.loginpopup {
+.loginPopup,
+.changePasswordPopup {
   margin: 15% 0 0 15%;
 }
 
-.signuppopup {
+.signupPopup,
+.changeNamePopup {
   margin: 15% 0 0 55%;
 }
 
