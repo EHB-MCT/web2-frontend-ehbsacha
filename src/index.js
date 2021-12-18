@@ -128,10 +128,16 @@ function showLoggedIn() { // If account in the navbar gets clicked opens the cha
   document.getElementById("loggedinScreen").style.display = "flex";
 }
 
+function showDelete() { // If account in the navbar gets clicked opens the change user data screen
+  document.getElementById("deleteScreen").style.display = "flex";
+  document.getElementById("loggedinScreen").style.display = "none";
+}
+
 function clearScreen(){ // Hides everything unnecessary
   document.getElementById("filter").style.display = "none";
   document.getElementById("loginScreen").style.display = "none";
   document.getElementById("loggedinScreen").style.display = "none";
+  document.getElementById("deleteScreen").style.display = "none";
 }
 
 function delay(n){
@@ -286,6 +292,12 @@ async function checkElements() { // After initialising open eventlistners
     document.getElementById("newPasswordSubmit").addEventListener("click", function (event) {
       event.preventDefault();
       newPassword();
+    });
+
+    // If you click on the loginsubmit do login action
+    document.getElementById("deleteButton").addEventListener("click", function (event) {
+      event.preventDefault();
+      showDelete();
     });
   }
 

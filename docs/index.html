@@ -75,6 +75,12 @@
     <div class="exitScreen">
       <p>Press anywhere to exit!</p>
     </div>
+    <button class="logout" id="logout">
+      <p>Logout</p>
+    </button>
+    <button class="delete" id="deleteButton">
+      <p>Delete profile</p>
+    </button>
     <div class="changeNamePopup" id="changeNameForm">
       <form action="#">
         <h1>Change name</h1>
@@ -99,6 +105,23 @@
         <input type="password" name="newPassword" id="newPassword" required>
         <p class="error" id="newPasswordError">You filed in something wrong!</p>
         <input type="submit" name="newPasswordSubmit" id="newPasswordSubmit" value="update password">
+      </form>
+    </div>
+  </div>
+
+  <div class="deleteScreen" id="deleteScreen">
+    <div class="exitScreen">
+      <p>Press anywhere to exit!</p>
+    </div>
+    <div class="deletePopup">
+      <form action="#" id="deleteForm">
+        <h1>Delete Profile</h1>
+        <p>name</p>
+        <input type="text" name="deleteName" id="deleteName" required>
+        <p>password</p>
+        <input type="password" name="deletePassword" id="deletePassword" required>
+        <p class="error" id="deleteError">Are you sure you want to delete?</p>
+        <input type="submit" name="deleteSubmit" id="deleteSubmit" value="login">
       </form>
     </div>
   </div>

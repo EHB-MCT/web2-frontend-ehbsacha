@@ -9,7 +9,8 @@
 }
 
 .loginScreen,
-.loggedinScreen {
+.loggedinScreen,
+.deleteScreen {
   display: none;
   flex-wrap: wrap;
 }
@@ -31,10 +32,41 @@
   z-index: 2;
 }
 
+.logout,
+.delete {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  padding: 10px 0;
+  height: 50px;
+  width: 13vw;
+  font-size: 20px;
+  font-weight: 500;
+  background-color: rgb(255, 255, 255);
+  z-index: 2;
+}
+
+.logout {
+  right: 3.3vw;
+  top: 65px;
+  color: rgb(255, 0, 0);
+  border: rgb(255, 0, 0) 1px solid;
+}
+
+.delete {
+  bottom: 1vh;
+  right: 1vw;
+  background-color: red;
+  color: white;
+  border: none;
+}
+
 .loginPopup,
 .signupPopup,
 .changePasswordPopup,
-.changeNamePopup {
+.changeNamePopup,
+.deletePopup {
   min-width: 400px;
   position: fixed;
   display: flex;
@@ -48,7 +80,8 @@
 .loginPopup form,
 .signupPopup form,
 .changePasswordPopup form,
-.changeNamePopup form {
+.changeNamePopup form,
+.deletePopup form {
   width: 100%;
   padding: 50px;
   display: flex;
@@ -63,6 +96,10 @@
 .signupPopup,
 .changePasswordPopup {
   margin: 15% 0 0 55%;
+}
+
+.deletePopup {
+  margin: 15% 0 0 35%;
 }
 
 form input {
