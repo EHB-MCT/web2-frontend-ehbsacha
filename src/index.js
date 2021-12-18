@@ -134,6 +134,13 @@ function clearScreen(){ // Hides everything unnecessary
   document.getElementById("loggedinScreen").style.display = "none";
 }
 
+function delay(n){
+  return new Promise(function(resolve){
+      console.log("timeout");
+      setTimeout(resolve,n*1000);
+  });
+}
+
 // -------------------------- //
 // Login and signup functions //
 // -------------------------- //
@@ -180,7 +187,10 @@ async function newName() {
         newName: `${document.getElementById("newName").value}`,
         _id: localStorage.getItem("userId")
       })};
-    await fetchData(signupUrl, prepared).then(window.location.reload(true));
+    await fetchData(signupUrl, prepared)
+      .then(console.log("succes"))
+      .then(await delay(2))
+      .then(window.location.reload(true));
   }catch(err){
     console.log(err);
     document.getElementById("newNameError").style.display = "flex"; // If you typed something wrong throw error
@@ -199,7 +209,10 @@ async function newPassword() {
         newPassword: `${document.getElementById("newPassword").value}`,
         _id: localStorage.getItem("userId")
       })};
-    await fetchData(signupUrl, prepared).then(window.location.reload(true));
+    await fetchData(signupUrl, prepared)
+      .then(console.log("succes"))
+      .then(await delay(2))
+      .then(window.location.reload(true));
   }catch(err){
     console.log(err);
     document.getElementById("newPasswordError").style.display = "flex"; // If you typed something wrong throw error

@@ -84,6 +84,10 @@ form h1 {
   color: red;
 }
 
+#newPasswordsucces {
+  display: none;
+}
+
 #loginError,
 #signupError,
 #newNameError,
