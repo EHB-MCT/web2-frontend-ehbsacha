@@ -225,6 +225,29 @@ async function newPassword() {
   }
 }
 
+async function logout() { // Logout
+  await localStorage.clear();
+  window.location.reload(true);
+}
+
+async function deleteUser() { // Delete user
+  try{ // Try to fetch
+    var signupUrl = `${link}user`;
+    const prepared = {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: `${document.getElementById("deleteName").value}`,
+        password: `${document.getElementById("deletePassword").value}`,
+        _id: localStorage.getItem("userId")
+      })};
+    await fetchData(signupUrl, prepared);
+  }catch(err){
+    await localStorage.clear();
+    window.location.reload(true);
+  }
+}
+
 function saveId(userData){ // If login or signup is succes save id in local token
   localStorage.setItem("userId", userData[0]._id); // Save the userId so it counts as loggedIn
   window.location.reload(true);
@@ -298,6 +321,18 @@ async function checkElements() { // After initialising open eventlistners
     document.getElementById("deleteButton").addEventListener("click", function (event) {
       event.preventDefault();
       showDelete();
+    });
+
+    // If you click on the loginsubmit do login action
+    document.getElementById("logout").addEventListener("click", function (event) {
+      event.preventDefault();
+      logout();
+    });
+
+    // If you click on the dletesubmit do delete the profile
+    document.getElementById("deleteSubmit").addEventListener("click", function (event) {
+      event.preventDefault();
+      deleteUser();
     });
   }
 
