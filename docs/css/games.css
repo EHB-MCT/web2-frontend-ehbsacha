@@ -116,3 +116,9 @@
   width: 325px;
   height: 25vh;
 }
+
+/* Liked or Shelved colors */
+
+.liked {
+  color: red;
+}

@@ -5,7 +5,7 @@
 // --------------------- //
 const heroku = "https://web2-gameheaven-ehbsacha.herokuapp.com/";
 const localhost = "http://localhost:3000/";
-var link = heroku;
+var link = localhost;
 
 // --------- //
 // Variables //
@@ -78,8 +78,8 @@ function buildList(games, htmlId, partOfSite){ // Build the list of games to put
         <div class="data">
           <p class="rating">${game.rank}</p>
           <div class="buttons">
-            <button class="wishlist"><i class="fas fa-heart fa-2x" id="${partOfSite}-like-${game.id}"></i></button>
-            <button class="shelf"><i class="fas fa-bookmark fa-2x" id="${partOfSite}-shelf-${game.id}"></i></button>
+            <button class="wishlist"><i class="fas fa-heart fa-2x like_${game.id}" id="${partOfSite}_like_${game.id}"></i></button>
+            <button class="shelf"><i class="fas fa-bookmark fa-2x shelf_${game.id}" id="${partOfSite}_shelf_${game.id}"></i></button>
           </div>
           <img src="${game.image_url}" alt="Scythe">
           <div class="bottomBar">
@@ -97,8 +97,6 @@ function buildList(games, htmlId, partOfSite){ // Build the list of games to put
 function selectBackground(game,id) { // Change background img to the first boardgame of this place on the site
   document.getElementById(id).style.backgroundImage = `url('${game.image_url}')`;
 }
-
-
 
 // ------------------- //
 // seperator functions //
@@ -253,6 +251,61 @@ function saveId(userData){ // If login or signup is succes save id in local toke
   window.location.reload(true);
 }
 
+// -------------------------- //
+// Like and shelf Items //
+// -------------------------- //
+async function likeFunction(gameId){
+  try{ // Try to fetch
+    var checkUrl = `${link}game?userId=${localStorage.getItem("userId")}&gameId=${gameId}`;
+    const exists = await fetchData(checkUrl,{method: 'GET'});
+    if(exists.length == 0){
+      try{ // Try to fetch
+        var postUrl = `${link}like?userId=${localStorage.getItem("userId")}&gameId=${gameId}`;
+        const created = await fetchData(postUrl,{method: 'POST'});
+        console.log(created);
+      }finally{
+        return;
+      }
+    }else{
+      try{ // Try to fetch
+        var postUrl = `${link}like?userId=${localStorage.getItem("userId")}&gameId=${gameId}`;
+        const updated = await fetchData(postUrl,{method: 'PUT'});
+        console.log(updated);
+      }finally{
+        return;
+      }
+    }
+  }catch(err){
+    console.log(err);
+  }
+}
+
+async function shelfFunction(gameId){
+  try{ // Try to fetch
+    var checkUrl = `${link}game?userId=${localStorage.getItem("userId")}&gameId=${gameId}`;
+    const exists = await fetchData(checkUrl,{method: 'GET'});
+    if(exists.length == 0){
+      try{ // Try to fetch
+        var postUrl = `${link}shelf?userId=${localStorage.getItem("userId")}&gameId=${gameId}`;
+        const created = await fetchData(postUrl,{method: 'POST'});
+        console.log(created);
+      }finally{
+        return;
+      }
+    }else{
+      try{ // Try to fetch
+        var postUrl = `${link}shelf?userId=${localStorage.getItem("userId")}&gameId=${gameId}`;
+        const updated = await fetchData(postUrl,{method: 'PUT'});
+        console.log(updated);
+      }finally{
+        return;
+      }
+    }
+  }catch(err){
+    console.log(err);
+  }
+}
+
 // -------------- //
 // Event listners //
 // -------------- //
@@ -341,24 +394,55 @@ async function checkElements() { // After initialising open eventlistners
   // ---------------------- //
 
   // Check for clicks in the chosen field, in this case for likes and shelf clicks
-  document.getElementById('topGames').addEventListener('click', (event)=> {
+  document.getElementById('likeShelfField').addEventListener('click', (event)=> {
     //Keep searching for the parent node to register the correct click
-    const likeId = event.target.className.indexOf('game');
+    const likeShelfId = event.target.className.indexOf('game');
     // console.log(likeId);
     // console.log(event.target.id);
+
+    if(!localStorage.getItem("userId")){
+      showLogin()
+      return;
+    }
   
-    if(likeId){
+    if(likeShelfId){
       // If the something which is clicked is has the word heart in the classname get the id and like or unlike the game
       if(event.target.className.indexOf('heart') !== -1){
-        var newid = selectId(event.target.id, "-"); // Get the id by removing the prefixes
-        console.log('like', newid);
+        // Color the likebutton red
+        if(document.getElementById(event.target.id).classList.length == 4){
+          document.getElementById(event.target.id).classList.add("liked");
+        }else{
+          document.getElementById(event.target.id).classList.remove("liked");
+        }
+
+        var newId = selectId(event.target.id, "_"); // Get the id by removing the prefixes
+        console.log('like', newId);
+        likeFunction(newId);
       }
       
       // If the something which is clicked is has the word bookmark in the classname get the id and shelf or unshelf the game
       if(event.target.className.indexOf('bookmark') !== -1){
-        var newid = selectId(event.target.id, "-"); // Get the id by removing the prefixes
-        console.log('bookmark', newid);
+        // Color the likebutton red
+        if(document.getElementById(event.target.id).classList.length == 4){
+          document.getElementById(event.target.id).classList.add("shelved");
+        }else{
+          document.getElementById(event.target.id).classList.remove("shelved");
+        }
+
+        var newId = selectId(event.target.id, "_"); // Get the id by removing the prefixes
+        console.log('like', newId);
+        shelfFunction(newId);
       }
     }
   });
 }
+
+// var elts = $(`*[class*="like_${newId}"]`)
+//   .filter(function () {
+//     return this.className.match(/(?:^|\s)text-/);
+//   });
+// console.log(elts);
+
+// change.forEach((e) => {
+//   document.getElementById(event.target.id).classList.add("liked");
+// });

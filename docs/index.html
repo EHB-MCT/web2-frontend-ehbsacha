@@ -5,11 +5,13 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://kit.fontawesome.com/11db2a43ab.js" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
   <link rel="stylesheet" href="./css/index.css">
   <script src="main.js"></script>
   <title>gameheaven</title>
 </head>
 <body>
+  <!-- Navigation -->
   <nav>
     <div class="navGroup">
       <button id="home">
@@ -39,8 +41,11 @@
       <button>account</button><button><i class="fas fa-user fa-2x"></i></button>
     </a>
   </nav>
+
+  <!-- The blurr you can click on in Login Screen, Change Screen or Delete Screen -->
   <div id="filter"></div>
-  
+
+  <!-- Login and Signup Screen -->
   <div class="loginScreen" id="loginScreen">
     <div class="exitScreen">
       <p>Press anywhere to exit!</p>
@@ -71,6 +76,7 @@
     </div>
   </div>
 
+  <!-- Change Name or password Screen -->
   <div class="loggedinScreen" id="loggedinScreen">
     <div class="exitScreen">
       <p>Press anywhere to exit!</p>
@@ -111,6 +117,7 @@
     </div>
   </div>
 
+  <!-- Delete profile Screen -->
   <div class="deleteScreen" id="deleteScreen">
     <div class="exitScreen">
       <p>Press anywhere to exit!</p>
@@ -129,14 +136,17 @@
     </div>
   </div>
 
-  <div id="tekstVlak"></div>
+  <!-- <div id="tekstVlak"></div> -->
+  <!-- Height of the navigation to Let data load under the navigation bar -->
   <div class="navHeight"></div>
-  <p class="title">Top games</p>
-  <div id="topGames"></div>
-  <div class="banner" id="bannerTopGames"></div>
-  <p class="title">Popular games</p>
-  <div id="popularGames"></div>
-  <div class="banner" id="bannerPopularGames"></div>
-  
+
+  <Div id="likeShelfField">
+    <p class="title">Top games</p>
+    <div id="topGames"></div>
+    <div class="banner" id="bannerTopGames"></div>
+    <p class="title">Popular games</p>
+    <div id="popularGames"></div>
+    <div class="banner" id="bannerPopularGames"></div>
+  </Div>
 </body>
 </html>
