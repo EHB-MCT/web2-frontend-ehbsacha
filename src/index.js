@@ -12,7 +12,7 @@ var link = localhost;
 // --------- //
 const apiKey = "client_id=5UGynejyAW"; //apiKey
 var topGames = []; // Array for topGames
-var popularGames = []; // Array for popular games
+var randomGames = []; // Array for random games
 
 // ------------ //
 // On page load //
@@ -35,16 +35,21 @@ window.onload = async function(){ // On page load starts with all these items
   // --------------------------- //
   
   // fetch top games
-  topGames = await fetchData(`https://api.boardgameatlas.com/api/search?order_by=rank&limit=12&ascending=false&${apiKey}`); // Fetch the top 8 games
+  topGames = await fetchData(`https://api.boardgameatlas.com/api/search?order_by=rank&limit=8&ascending=false&${apiKey}`); // Fetch the top 8 games
   buildList(topGames.games, 'topGames', "top"); // Place the games on the page
 
-  // fetch popular games
-  popularGames = await fetchData(`https://api.boardgameatlas.com/api/search?order_by=rank&limit=7&adescending=false&${apiKey}`); // Fetch the top 8 reddit mentioned games
-  buildList(popularGames.games, 'popularGames', "popular"); // Place the games on the page
+  // fetch 8 random games
+  for (let i = 0; i < 8; i++) {
+    var randomGame = await fetchData(`https://api.boardgameatlas.com/api/search?random=true&${apiKey}`);
+    randomGames.push(Object(randomGame.games[0]));
+  }
+  console.log(randomGames);
+  // popularGames += await fetchData('https://api.boardgameatlas.com/api/search?order_by=rank&limit=8&adescending=false&${apiKey}'); // Fetch the top 8 reddit mentioned games
+  buildList(randomGames, 'randomGames', "random"); // Place the games on the page
 
   // Set correct images as background
-  selectBackground(topGames.games[1], "bannerTopGames"); // Topgames background
-  selectBackground(popularGames.games[2], "bannerPopularGames"); // Populargames backgound
+  selectBackground(topGames.games[0], "bannerTopGames"); // Topgames background
+  selectBackground(randomGames[0], "bannerRandomGames"); // Randomgames backgound
 
 
   // ----------------------- //
@@ -251,9 +256,9 @@ function saveId(userData){ // If login or signup is succes save id in local toke
   window.location.reload(true);
 }
 
-// -------------------------- //
+// -------------------- //
 // Like and shelf Items //
-// -------------------------- //
+// -------------------- //
 async function likeFunction(gameId){
   try{ // Try to fetch
     var checkUrl = `${link}game?userId=${localStorage.getItem("userId")}&gameId=${gameId}`;
@@ -262,7 +267,6 @@ async function likeFunction(gameId){
       try{ // Try to fetch
         var postUrl = `${link}like?userId=${localStorage.getItem("userId")}&gameId=${gameId}`;
         const created = await fetchData(postUrl,{method: 'POST'});
-        console.log(created);
       }finally{
         return;
       }
@@ -270,7 +274,6 @@ async function likeFunction(gameId){
       try{ // Try to fetch
         var postUrl = `${link}like?userId=${localStorage.getItem("userId")}&gameId=${gameId}`;
         const updated = await fetchData(postUrl,{method: 'PUT'});
-        console.log(updated);
       }finally{
         return;
       }
@@ -288,7 +291,6 @@ async function shelfFunction(gameId){
       try{ // Try to fetch
         var postUrl = `${link}shelf?userId=${localStorage.getItem("userId")}&gameId=${gameId}`;
         const created = await fetchData(postUrl,{method: 'POST'});
-        console.log(created);
       }finally{
         return;
       }
@@ -296,7 +298,6 @@ async function shelfFunction(gameId){
       try{ // Try to fetch
         var postUrl = `${link}shelf?userId=${localStorage.getItem("userId")}&gameId=${gameId}`;
         const updated = await fetchData(postUrl,{method: 'PUT'});
-        console.log(updated);
       }finally{
         return;
       }
@@ -430,7 +431,7 @@ async function checkElements() { // After initialising open eventlistners
         }
 
         var newId = selectId(event.target.id, "_"); // Get the id by removing the prefixes
-        console.log('like', newId);
+        console.log('bookmark', newId);
         shelfFunction(newId);
       }
     }
