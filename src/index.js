@@ -14,6 +14,9 @@ const apiKey = "client_id=5UGynejyAW"; //apiKey
 var topGames = []; // Array for topGames
 var randomGames = []; // Array for random games
 
+var likes = [];
+var shelved = [];
+
 // ------------ //
 // On page load //
 // ------------ //
@@ -28,6 +31,8 @@ window.onload = async function(){ // On page load starts with all these items
   if(localStorage.getItem("userId")){
     document.getElementById("login").style.display = "none";
     document.getElementById("loggedin").style.display = "flex";
+    await fetchAllLikes();
+    await fetchAllShelves();
   }
 
   // ----------------- //
@@ -41,9 +46,13 @@ window.onload = async function(){ // On page load starts with all these items
     randomGames.push(randomGame.games[0]);
   }
 
+  if(localStorage.getItem("userId")){
+  }
+
   // ----------------- //
-  // Setup games fetch //
+  // Load the gamedata //
   // ----------------- //
+  await changeContent();
   await loadPageData();
 
   // ----------------------- //
@@ -64,7 +73,6 @@ async function fetchData(someUrl, method){ // Fetch the required data
 // Page load/reload function //
 // ------------------------- //
 async function loadPageData(){
-  await changeContent();
   await buildList(topGames.games, 'topGames', "top"); // Place the games on the page
   await buildList(randomGames, 'randomGames', "random"); // Place the games on the page
   // Set correct images as background
@@ -122,29 +130,42 @@ async function changeContent(){
 // Reusable site build functions //
 // ----------------------------- //
 function buildList(games, htmlId, partOfSite){ // Build the list of games to put in the html and make them visible
+  
   //Change the innerHTML of the page
   let html = ''; // Start clean
   //Make a for loop to pass all the games who are needed to be displayed
   for(let game of games){ // Iterate over the sended array
-      var newString = deString(game.handle, "-"); // Do deString function. At funtion itself more information
-      html += `
-      <div class="game" value="${game.id}">
-        <div class="name"><p>${newString}</p></div>
-        <div class="data">
-          <p class="rating">${game.rank}</p>
-          <div class="buttons">
-            <button class="wishlist"><i class="fas fa-heart fa-2x like_${game.id}" id="${partOfSite}_like_${game.id}"></i></button>
-            <button class="shelf"><i class="fas fa-bookmark fa-2x shelf_${game.id}" id="${partOfSite}_shelf_${game.id}"></i></button>
-          </div>
-          <img src="${game.image_url}" alt="Scythe">
-          <div class="bottomBar">
-            <p class="players">${game.min_players}-${game.max_players} <i class="fas fa-users"></i></p>
-            <p class="duration">${game.min_playtime}-${game.max_playtime} <i class="fas fa-clock"></i></p>
-            <p class="age">${game.min_age}+</p>
-          </div>
+    var likeClass = '';
+    var shelfClass = '';
+    likes.forEach((like) => {
+      if(like.gameId == game.id){
+        likeClass = "liked";
+      }
+    });
+    shelved.forEach((shelf) => {
+      if(shelf.gameId == game.id){
+        shelfClass = "shelved";
+      }
+    });
+    var newString = deString(game.handle, "-"); // Do deString function. At funtion itself more information
+    html += `
+    <div class="game" value="${game.id}">
+      <div class="name"><p>${newString}</p></div>
+      <div class="data">
+        <p class="rating">${game.rank}</p>
+        <div class="buttons">
+          <button class="wishlist"><i class="fas fa-heart fa-2x like_${game.id} ${likeClass}" id="${partOfSite}_like_${game.id}"></i></button>
+          <button class="shelf"><i class="fas fa-bookmark fa-2x shelf_${game.id} ${shelfClass}" id="${partOfSite}_shelf_${game.id}"></i></button>
         </div>
-      </div>`;
-      // The html for each game
+        <img src="${game.image_url}" alt="Scythe">
+        <div class="bottomBar">
+          <p class="players">${game.min_players}-${game.max_players} <i class="fas fa-users"></i></p>
+          <p class="duration">${game.min_playtime}-${game.max_playtime} <i class="fas fa-clock"></i></p>
+          <p class="age">${game.min_age}+</p>
+        </div>
+      </div>
+    </div>`;
+    // The html for each game
   }
   document.getElementById(htmlId).innerHTML = html; // Put the builded games list into the right place in html with the corensponding id
 }
@@ -357,6 +378,32 @@ async function shelfFunction(gameId){
   }
 }
 
+async function fetchAllLikes(){
+  try{ // Try to fetch
+    var checkUrl = `${link}likes?userId=${localStorage.getItem("userId")}`;
+    likes = await fetchData(checkUrl,{method: 'GET'});
+    console.log(likes)
+    if(likes == ''){
+      console.log("empty");
+    }
+  }catch(err){
+    console.log(err);
+  }
+}
+
+async function fetchAllShelves(){
+  try{ // Try to fetch
+    var checkUrl = `${link}shelved?userId=${localStorage.getItem("userId")}`;
+    shelved = await fetchData(checkUrl,{method: 'GET'});
+    console.log(shelved)
+    if(shelved == ''){
+      console.log("empty");
+    }
+  }catch(err){
+    console.log(err);
+  }
+}
+
 // -------------- //
 // Event listners //
 // -------------- //
@@ -459,7 +506,7 @@ async function checkElements() { // After initialising open eventlistners
     if(likeShelfId){
       // If the something which is clicked is has the word heart in the classname get the id and like or unlike the game
       if(event.target.className.indexOf('heart') !== -1){
-        // Color the likebutton red
+        // Quick limited solusion while like fetch happens and the page data reloads
         if(document.getElementById(event.target.id).classList.length == 4){
           document.getElementById(event.target.id).classList.add("liked");
         }else{
@@ -473,7 +520,7 @@ async function checkElements() { // After initialising open eventlistners
       
       // If the something which is clicked is has the word bookmark in the classname get the id and shelf or unshelf the game
       if(event.target.className.indexOf('bookmark') !== -1){
-        // Color the likebutton red
+        // Quick limited solusion while like fetch happens and the page data reloads
         if(document.getElementById(event.target.id).classList.length == 4){
           document.getElementById(event.target.id).classList.add("shelved");
         }else{
@@ -487,13 +534,3 @@ async function checkElements() { // After initialising open eventlistners
     }
   });
 }
-
-// var elts = $(`*[class*="like_${newId}"]`)
-//   .filter(function () {
-//     return this.className.match(/(?:^|\s)text-/);
-//   });
-// console.log(elts);
-
-// change.forEach((e) => {
-//   document.getElementById(event.target.id).classList.add("liked");
-// });
