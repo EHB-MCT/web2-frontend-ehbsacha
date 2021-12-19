@@ -30,33 +30,25 @@ window.onload = async function(){ // On page load starts with all these items
     document.getElementById("loggedin").style.display = "flex";
   }
 
-  // --------------------------- //
-  // Setup games fetch and place //
-  // --------------------------- //
-  
+  // ----------------- //
+  // Setup games fetch //
+  // ----------------- //
   // fetch top games
   topGames = await fetchData(`https://api.boardgameatlas.com/api/search?order_by=rank&limit=8&ascending=false&${apiKey}`); // Fetch the top 8 games
-  buildList(topGames.games, 'topGames', "top"); // Place the games on the page
-
   // fetch 8 random games
   for (let i = 0; i < 8; i++) {
-    var randomGame = await fetchData(`https://api.boardgameatlas.com/api/search?random=true&${apiKey}`);
-    randomGames.push(Object(randomGame.games[0]));
+    var randomGame = await fetchData(`https://api.boardgameatlas.com/api/search?random=true&${apiKey}`); // Fetch 8 random games
+    randomGames.push(randomGame.games[0]);
   }
-  console.log(randomGames);
-  // popularGames += await fetchData('https://api.boardgameatlas.com/api/search?order_by=rank&limit=8&adescending=false&${apiKey}'); // Fetch the top 8 reddit mentioned games
-  buildList(randomGames, 'randomGames', "random"); // Place the games on the page
 
-  // Set correct images as background
-  selectBackground(topGames.games[0], "bannerTopGames"); // Topgames background
-  selectBackground(randomGames[0], "bannerRandomGames"); // Randomgames backgound
-
+  // ----------------- //
+  // Setup games fetch //
+  // ----------------- //
+  await loadPageData();
 
   // ----------------------- //
   // After the setup is done //
   // ----------------------- //
-
-  // After initialising open eventlistners
   checkElements(); // activate eventListners
 };
 
@@ -66,6 +58,63 @@ window.onload = async function(){ // On page load starts with all these items
 async function fetchData(someUrl, method){ // Fetch the required data
   return await fetch(someUrl, method) // Return the value after fetch is done
       .then(response => response.json()); // Make the returned readable
+}
+
+// ------------------------- //
+// Page load/reload function //
+// ------------------------- //
+async function loadPageData(){
+  await changeContent();
+  await buildList(topGames.games, 'topGames', "top"); // Place the games on the page
+  await buildList(randomGames, 'randomGames', "random"); // Place the games on the page
+  // Set correct images as background
+  await selectBackground(topGames.games[0], "bannerTopGames"); // Topgames background
+  if(localStorage.getItem("userId")){
+    await selectBackground(randomGames[0], "bannerRandomGames"); // Randomgames backgound
+    //set correct games
+    await buildList(topGames.games, 'likedGames', "liked"); // Place the games on the page
+    await buildList(randomGames, 'shelvedGames', "shelved"); // Place the games on the page
+    // Set correct images as background
+    await selectBackground(topGames.games[0], "bannerLikedGames"); // Topgames background
+  }
+}
+
+async function changeContent(){
+  //Change the innerHTML of the page
+  let html = ''; // Start clean
+  if(!localStorage.getItem("userId")){
+    html += `
+    <Div id="likeShelfField">
+      <p class="title">Top games</p>
+      <div id="topGames"></div>
+      <div class="moreButton"><a href="#" id="moreTopGames">more topgames</a></div>
+      <div class="banner" id="bannerTopGames"></div>
+      <p class="title">Random games</p>
+      <div id="randomGames"></div>
+      <div class="moreButton"><a href="#" id="moreTopGames">more randomgames</a></div>
+      <div class="banner" id="bannerRandomGames"></div>
+    </Div>`;
+  }else{
+    html += `
+    <Div id="likeShelfField">
+      <p class="title">Top games</p>
+      <div id="topGames"></div>
+      <div class="moreButton"><a href="#" id="moreTopGames">more topgames</a></div>
+      <div class="banner" id="bannerTopGames"></div>
+      <p class="title">Random games</p>
+      <div id="randomGames"></div>
+      <div class="moreButton"><a href="#" id="moreTopGames">more randomgames</a></div>
+      <div class="banner" id="bannerRandomGames"></div>
+      <p class="title">Liked games</p>
+      <div id="likedGames"></div>
+      <div class="moreButton"><a href="#" id="moreLikedGames">more likedgames</a></div>
+      <div class="banner" id="bannerLikedGames"></div>
+      <p class="title">Shelved games</p>
+      <div id="shelvedGames"></div>
+      <div class="moreButton"><a href="#" id="moreShelvedGames">more shelvedgames</a></div>
+    </Div>`;
+  }
+  document.getElementById("content").innerHTML = html; // Put the builded games list into the right place in html with the corensponding id
 }
 
 // ----------------------------- //

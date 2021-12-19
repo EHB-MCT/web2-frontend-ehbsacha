@@ -13,7 +13,9 @@
 
 /* The game block flexbox */
 #topGames,
-#randomGames {
+#randomGames,
+#likedGames,
+#shelvedGames {
   margin: 0 5% 50px;
   width: 90%;
   display: flex;
@@ -135,7 +137,10 @@
   width: 100%;
 }
 
-#moreTopgames {
+#moreTopgames,
+#moreTopGames,
+#moreLikedGames,
+#moreShelvedGames {
   justify-self: center;
   max-width: 12%;
   margin: 0 5% 3%;
