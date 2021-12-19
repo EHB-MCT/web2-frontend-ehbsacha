@@ -5,7 +5,7 @@
 // --------------------- //
 const heroku = "https://web2-gameheaven-ehbsacha.herokuapp.com/";
 const localhost = "http://localhost:3000/";
-var link = localhost;
+var link = heroku;
 
 // --------- //
 // Variables //
@@ -512,10 +512,9 @@ async function checkElements() { // After initialising open eventlistners
         }else{
           document.getElementById(event.target.id).classList.remove("liked");
         }
-
+    
         var newId = selectId(event.target.id, "_"); // Get the id by removing the prefixes
-        console.log('like', newId);
-        likeFunction(newId);
+        like(newId);
       }
       
       // If the something which is clicked is has the word bookmark in the classname get the id and shelf or unshelf the game
@@ -526,11 +525,24 @@ async function checkElements() { // After initialising open eventlistners
         }else{
           document.getElementById(event.target.id).classList.remove("shelved");
         }
-
+    
         var newId = selectId(event.target.id, "_"); // Get the id by removing the prefixes
-        console.log('bookmark', newId);
-        shelfFunction(newId);
+        shelf(newId);
       }
     }
   });
+}
+
+// Created these two for the await
+async function like(id){
+  console.log('like', id);
+  await likeFunction(id);
+  await fetchAllLikes();
+  await loadPageData();
+}
+async function shelf(id){
+  console.log('bookmark', id);
+  await shelfFunction(id);
+  await fetchAllShelves();
+  await loadPageData();
 }
