@@ -25,7 +25,6 @@ window.onload = async function(){ // On page load starts with all these items
   // ------------------------ //
   // logged in related navbar //
   // ------------------------ //
-
   console.log(localStorage.getItem("userId"));
   // Setup navbar (loggedin or not)
   if(localStorage.getItem("userId")){
@@ -47,6 +46,7 @@ window.onload = async function(){ // On page load starts with all these items
   }
 
   if(localStorage.getItem("userId")){
+    // Place the fetch for liked games and shelved games
   }
 
   // ----------------- //
@@ -78,7 +78,7 @@ async function loadPageData(){
   // Set correct images as background
   await selectBackground(topGames.games[0], "bannerTopGames"); // Topgames background
   if(localStorage.getItem("userId")){
-    await selectBackground(randomGames[0], "bannerRandomGames"); // Randomgames backgound
+    await selectBackground(randomGames[Math.floor(Math.random() * 9)], "bannerRandomGames"); // Randomgames backgound
     //set correct games
     await buildList(topGames.games, 'likedGames', "liked"); // Place the games on the page
     await buildList(randomGames, 'shelvedGames', "shelved"); // Place the games on the page
