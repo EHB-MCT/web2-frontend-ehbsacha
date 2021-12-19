@@ -77,6 +77,7 @@ async function loadPageData(){
     // Set correct images as background
     await selectBackground(topGames.games[0], "bannerLikedGames"); // Topgames background
   }
+  document.getElementById("loading").style.display = "none";
 }
 
 async function changeContent(){

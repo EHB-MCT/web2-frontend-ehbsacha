@@ -2,6 +2,7 @@
 @import url("games.css");
 @import url("banner.css");
 @import url("popup.css");
+@import url("loading.css");
 
 * {
   margin: 0;
