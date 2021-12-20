@@ -20,6 +20,9 @@ var search = []; // Array for search data
 var likes = []; // Array for the liked game Ids
 var shelved = []; // Array for the shelved game Ids
 
+var pageOfOnlyShow = 0; // The page you are on if you are vititing a specific place
+var onlyshow = false;
+
 // ------------ //
 // On page load //
 // ------------ //
@@ -33,8 +36,8 @@ window.onload = async function(){ // On page load starts with all these items
     document.getElementById("loggedin").style.display = "flex";
     await fetchAllLikes();
     await fetchAllShelves();
-    await fillLikedGames();
-    await fillShelvedGames();
+    await fillLikedGames(8);
+    await fillShelvedGames(8);
   }
 
   // ----------------- //
@@ -124,7 +127,6 @@ async function changeContent(){
       <div class="banner" id="bannerTopGames"></div>
       <p class="title">Random games</p>
       <div id="randomGames"></div>
-      <div class="moreButton"><a href="#" id="moreTopGames">more randomgames</a></div>
       <div class="banner" id="bannerRandomGames"></div>
     </Div>`;
   }else{
@@ -141,7 +143,6 @@ async function changeContent(){
       <div class="banner" id="bannerTopGames"></div>
       <p class="title">Random games</p>
       <div id="randomGames"></div>
-      <div class="moreButton"><a href="#" id="moreTopGames">more randomgames</a></div>
       <div class="showLiked" id="showLiked">
         <div class="banner" id="bannerRandomGames"></div>
         <p class="title">Liked games</p>
@@ -158,6 +159,7 @@ async function changeContent(){
   }
   document.getElementById("content").innerHTML = html; // Put the builded games list into the right place in html with the corensponding id
 }
+// More random games button: <div class="moreButton"><a href="#" id="moreRandomGames">more randomgames</a></div>
 
 // ----------------------------- //
 // Reusable site build functions //
@@ -208,7 +210,7 @@ function selectBackground(game,id) { // Change background img to the first board
   }catch(err){
     console.log(err);
     // Fallback background, if there is an error use this background
-    document.getElementById(id).style.backgroundImage = `url('${topGames.games[0].image_url}')`;
+    document.getElementById(id).style.backgroundImage = `url('${topGames.games[1].image_url}')`;
   }finally{
     return;
   }
@@ -456,8 +458,13 @@ async function checkElements() { // After initialising open eventlistners
   // if you click on the searchbutton a fetch happens
   document.getElementById("searchSubmit").addEventListener("click", function (event) {
     event.preventDefault();
-    console.log("clicked");
     searchFunction();
+  });
+
+  // if you click on the moreTopGames fill page with specific data
+  document.getElementById("moreTopGames").addEventListener("click", function (event) {
+    event.preventDefault();
+    onlyShow("Top","top");
   });
 
   // --------------- //
@@ -530,12 +537,27 @@ async function checkElements() { // After initialising open eventlistners
       event.preventDefault();
       deleteUser();
     });
+
+    // if you click on the moreLikedGames fill page with specific data
+    document.getElementById("moreLikedGames").addEventListener("click", function (event) {
+      event.preventDefault();
+      onlyShow("Liked", "liked");
+    });
+
+    // if you click on the moreShelvedGames fill page with specific data
+    document.getElementById("moreShelvedGames").addEventListener("click", function (event) {
+      event.preventDefault();
+      onlyShow("Shelved", "shelved");
+    });
   }
 
   // ---------------------- //
   // Like and shelf related //
   // ---------------------- //
+  likeClickCheck();
+}
 
+async function likeClickCheck(){
   // Check for clicks in the chosen field, in this case for likes and shelf clicks
   document.getElementById('likeShelfField').addEventListener('click', (event)=> {
     //Keep searching for the parent node to register the correct click
@@ -600,20 +622,24 @@ async function searchFunction() {
 async function like(id){
   await likeFunction(id);
   await fetchAllLikes();
-  await fillLikedGames();
-  await loadPageData();
+  await fillLikedGames(8);
+  if(!onlyshow){
+    await loadPageData();
+  }
 }
 
 async function shelf(id){
   await shelfFunction(id);
   await fetchAllShelves();
-  await fillShelvedGames();
-  await loadPageData();
+  await fillShelvedGames(8);
+  if(!onlyshow){
+    await loadPageData();
+  }
 }
 
-async function fillLikedGames(){
+async function fillLikedGames(limit){
   var idList = ``;
-  for(let i = 0; i < 8 && i < likes.length; i++) {
+  for(let i = 0; i < limit && i < likes.length; i++) {
     if(idList == ''){
       idList += `${likes[i].gameId}`
     } else {
@@ -632,9 +658,9 @@ async function fillLikedGames(){
   }
 }
 
-async function fillShelvedGames(){
+async function fillShelvedGames(limit){
   var idList = ``;
-  for(let i = 0; i < 8 && i < shelved.length; i++) {
+  for(let i = 0; i < limit && i < shelved.length; i++) {
     if(idList == ''){
       idList += `${shelved[i].gameId}`
     } else {
@@ -651,4 +677,64 @@ async function fillShelvedGames(){
   if(idList == ''){
     shelvedGames = '';
   }
+}
+
+// ---------------------- //
+// Only load part of site //
+// ---------------------- //
+async function onlyShow(capital, name, skip) {
+  onlyshow = true;
+  let moreButton = '';
+  if(name == "top"){
+    moreButton = `
+    <div class="nextPrevious">
+      <a href="#" id="previous_Top">previous topgames</a>
+      <a href="#" id="next_Top">next topgames</a>
+    </div>`
+  }
+  let html = ''; // Start clean
+  html += `
+  <Div id="likeShelfField">
+    <p class="title">${capital} games</p>
+    <div id="${name}Games"></div>
+    ${moreButton}
+  </Div>`;
+  document.getElementById("content").innerHTML = html;
+  if(name == "top"){
+    topGames = await fetchData(`https://api.boardgameatlas.com/api/search?order_by=rank&limit=24&skip=${skip * 24}&${apiKey}`); // Fetch the top 8 games
+    buildList(topGames.games, `${name}Games`, name);
+    checkTop();
+  } else if(name == "liked"){
+    await fetchAllLikes();
+    fillLikedGames(likes.length);
+    buildList(likedGames.games, `${name}Games`, name);
+  }else if(name == "shelved"){
+    await fetchAllShelves();
+    fillLikedGames(shelved.length);
+    buildList(shelvedGames.games, `${name}Games`, name);
+  }
+  likeClickCheck();
+}
+
+function checkTop(params) {
+  document.getElementById("next_Top").addEventListener("click", function (event) {
+    event.preventDefault();
+    pageOfOnlyShow++;
+    console.log(pageOfOnlyShow)
+    onlyTop(pageOfOnlyShow);
+  });
+
+  document.getElementById("previous_Top").addEventListener("click", function (event) {
+    event.preventDefault();
+    if(pageOfOnlyShow >= 1){
+      pageOfOnlyShow--;
+    }
+    console.log(pageOfOnlyShow)
+    onlyTop(pageOfOnlyShow);
+  });
+}
+
+async function onlyTop(skip) {
+  topGames = await fetchData(`https://api.boardgameatlas.com/api/search?order_by=rank&limit=24&skip=${skip * 24}&${apiKey}`); // Fetch the top 8 games
+  await buildList(topGames.games, 'topGames', 'top');
 }

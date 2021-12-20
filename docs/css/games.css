@@ -141,10 +141,21 @@
 #moreTopgames,
 #moreTopGames,
 #moreLikedGames,
-#moreShelvedGames {
+#moreShelvedGames,
+#next_Top {
   justify-self: center;
   max-width: 12%;
-  margin: 0 5% 3%;
+  margin: 0 5% 3% 0;
+  width: auto;
+  background-color: white;
+  padding: 10px 30px;
+  border: 1px black solid;
+}
+
+#previous_Top {
+  justify-self: center;
+  max-width: 12%;
+  margin: 0 0 3% 5%;
   width: auto;
   background-color: white;
   padding: 10px 30px;
@@ -157,4 +168,10 @@
 #showSearched {
   display: flex;
   flex-direction: column;
+}
+
+.nextPrevious {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }

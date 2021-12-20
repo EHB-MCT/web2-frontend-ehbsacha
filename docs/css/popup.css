@@ -28,7 +28,7 @@
   font-weight: 500;
   background-color: white;
   border: rgba(152, 160, 168, 0.808) 1px solid;
-  border-radius: 20px;
+  /* border-radius: 20px; */
   z-index: 2;
 }
 
@@ -72,7 +72,7 @@
   display: flex;
   background-color: white;
   border: rgba(152, 160, 168, 0.808) 1px solid;
-  border-radius: 20px;
+  /* border-radius: 20px; */
   width: 30%;
   z-index: 2;
 }
