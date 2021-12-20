@@ -10,3 +10,5 @@ A freshup of localstorage: https://www.w3schools.com/jsref/prop_win_localstorage
 Reload page on login/ signup: https://www.w3docs.com/snippets/javascript/how-to-reload-a-page-using-javascript.html
 
 delay function: https://www.delftstack.com/howto/javascript/javascript-wait-for-x-seconds/
+
+Used this loading screen: https://stackoverflow.com/questions/25253391/javascript-loading-screen-while-page-loads

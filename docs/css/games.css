@@ -1,4 +1,4 @@
-/* The section top, popular or ... */
+/* The section top, random or ... */
 /* currently no use */
 .top {
   width: 100%;
@@ -13,7 +13,9 @@
 
 /* The game block flexbox */
 #topGames,
-#popularGames {
+#randomGames,
+#likedGames,
+#shelvedGames {
   margin: 0 5% 50px;
   width: 90%;
   display: flex;
@@ -115,4 +117,42 @@
   object-fit: contain;
   width: 325px;
   height: 25vh;
+}
+
+/* Liked or Shelved colors */
+
+.liked {
+  color: red;
+}
+
+.shelved {
+  color: gold;
+}
+
+/* More games buttons */
+
+.moreButton {
+  display: flex;
+  justify-content: end;
+  width: 100%;
+}
+
+#moreTopgames,
+#moreTopGames,
+#moreLikedGames,
+#moreShelvedGames {
+  justify-self: center;
+  max-width: 12%;
+  margin: 0 5% 3%;
+  width: auto;
+  background-color: white;
+  padding: 10px 30px;
+  border: 1px black solid;
+}
+
+/* showLiked en showShelf */
+#showLiked,
+#showShelved {
+  display: flex;
+  flex-direction: column;
 }

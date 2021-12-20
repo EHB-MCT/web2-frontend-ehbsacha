@@ -12,7 +12,14 @@ var link = heroku;
 // --------- //
 const apiKey = "client_id=5UGynejyAW"; //apiKey
 var topGames = []; // Array for topGames
-var popularGames = []; // Array for popular games
+var randomGames = []; // Array for random games
+var likedGames = []; // Array for liked games
+var shelvedGames = []; // Array for shelved games
+
+var likes = [];
+var shelved = [];
+var likes = []; // Array for the liked game Ids
+var shelved = []; // Array for the shelved game Ids
 
 // ------------ //
 // On page load //
@@ -22,36 +29,39 @@ window.onload = async function(){ // On page load starts with all these items
   // ------------------------ //
   // logged in related navbar //
   // ------------------------ //
-
-  console.log(localStorage.getItem("userId"));
-  // Setup navbar (loggedin or not)
-  if(localStorage.getItem("userId")){
+  if(localStorage.getItem("userId")){ // Setup navbar (loggedin or not)
     document.getElementById("login").style.display = "none";
     document.getElementById("loggedin").style.display = "flex";
+    await fetchAllLikes();
+    await fetchAllShelves();
+    await fillLikedGames();
+    await fillShelvedGames();
   }
 
-  // --------------------------- //
-  // Setup games fetch and place //
-  // --------------------------- //
-  
+  // ----------------- //
+  // Setup games fetch //
+  // ----------------- //
   // fetch top games
-  topGames = await fetchData(`https://api.boardgameatlas.com/api/search?order_by=rank&limit=12&ascending=false&${apiKey}`); // Fetch the top 8 games
-  buildList(topGames.games, 'topGames', "top"); // Place the games on the page
+  topGames = await fetchData(`https://api.boardgameatlas.com/api/search?order_by=rank&limit=8&${apiKey}`); // Fetch the top 8 games
+  // fetch 8 random games
+  for (let i = 0; i < 8; i++) {
+    var randomGame = await fetchData(`https://api.boardgameatlas.com/api/search?random=true&${apiKey}`); // Fetch 8 random games
+    randomGames.push(randomGame.games[0]);
+  }
+  // A small sort
+  randomGames.sort((a, b) => {
+    return a.rank-b.rank;
+  });
 
-  // fetch popular games
-  popularGames = await fetchData(`https://api.boardgameatlas.com/api/search?order_by=rank&limit=7&adescending=false&${apiKey}`); // Fetch the top 8 reddit mentioned games
-  buildList(popularGames.games, 'popularGames', "popular"); // Place the games on the page
-
-  // Set correct images as background
-  selectBackground(topGames.games[1], "bannerTopGames"); // Topgames background
-  selectBackground(popularGames.games[2], "bannerPopularGames"); // Populargames backgound
-
+  // ----------------- //
+  // Load the gamedata //
+  // ----------------- //
+  await changeContent();
+  await loadPageData();
 
   // ----------------------- //
   // After the setup is done //
   // ----------------------- //
-
-  // After initialising open eventlistners
   checkElements(); // activate eventListners
 };
 
@@ -63,6 +73,76 @@ async function fetchData(someUrl, method){ // Fetch the required data
       .then(response => response.json()); // Make the returned readable
 }
 
+// ------------------------- //
+// Page load/reload function //
+// ------------------------- //
+async function loadPageData(){
+  await buildList(topGames.games, 'topGames', "top"); // Place the games on the page
+  await buildList(randomGames, 'randomGames', "random"); // Place the games on the page
+  // Set correct images as background
+  await selectBackground(topGames.games[Math.floor(Math.random() * 8)], "bannerTopGames"); // Topgames background
+  if(localStorage.getItem("userId")){
+    //set correct games
+    if(likedGames != ''){
+      await selectBackground(randomGames[Math.floor(Math.random() * 8)], "bannerRandomGames"); // Randomgames backgound
+      await buildList(likedGames.games, 'likedGames', "liked"); // Place the games on the page
+      document.getElementById("showLiked").style.display = 'flex';
+    }else{
+      document.getElementById("showLiked").style.display = 'none';
+    }
+    if(shelvedGames != ''){
+      await buildList(shelvedGames.games, 'shelvedGames', "shelved"); // Place the games on the page
+      await selectBackground(likedGames.games[Math.floor(Math.random() * 8)], "bannerLikedGames"); // Topgames background
+      document.getElementById("showShelved").style.display = 'flex';
+    }else{
+      document.getElementById("showShelved").style.display = 'none';
+    }
+  }
+  document.getElementById("loading").style.display = "none";
+}
+
+async function changeContent(){
+  //Change the innerHTML of the page
+  let html = ''; // Start clean
+  if(!localStorage.getItem("userId")){
+    html += `
+    <Div id="likeShelfField">
+      <p class="title">Top games</p>
+      <div id="topGames"></div>
+      <div class="moreButton"><a href="#" id="moreTopGames">more topgames</a></div>
+      <div class="banner" id="bannerTopGames"></div>
+      <p class="title">Random games</p>
+      <div id="randomGames"></div>
+      <div class="moreButton"><a href="#" id="moreTopGames">more randomgames</a></div>
+      <div class="banner" id="bannerRandomGames"></div>
+    </Div>`;
+  }else{
+    html += `
+    <Div id="likeShelfField">
+      <p class="title">Top games</p>
+      <div id="topGames"></div>
+      <div class="moreButton"><a href="#" id="moreTopGames">more topgames</a></div>
+      <div class="banner" id="bannerTopGames"></div>
+      <p class="title">Random games</p>
+      <div id="randomGames"></div>
+      <div class="moreButton"><a href="#" id="moreTopGames">more randomgames</a></div>
+      <div class="showLiked" id="showLiked">
+        <div class="banner" id="bannerRandomGames"></div>
+        <p class="title">Liked games</p>
+        <div id="likedGames"></div>
+        <div class="moreButton"><a href="#" id="moreLikedGames">more likedgames</a></div>
+      </div>
+      <div class="showShelved" id="showShelved">
+        <div class="banner" id="bannerLikedGames"></div>
+        <p class="title">Shelved games</p>
+        <div id="shelvedGames"></div>
+        <div class="moreButton"><a href="#" id="moreShelvedGames">more shelvedgames</a></div>
+      </div>
+    </Div>`;
+  }
+  document.getElementById("content").innerHTML = html; // Put the builded games list into the right place in html with the corensponding id
+}
+
 // ----------------------------- //
 // Reusable site build functions //
 // ----------------------------- //
@@ -71,34 +151,52 @@ function buildList(games, htmlId, partOfSite){ // Build the list of games to put
   let html = ''; // Start clean
   //Make a for loop to pass all the games who are needed to be displayed
   for(let game of games){ // Iterate over the sended array
-      var newString = deString(game.handle, "-"); // Do deString function. At funtion itself more information
-      html += `
-      <div class="game" value="${game.id}">
-        <div class="name"><p>${newString}</p></div>
-        <div class="data">
-          <p class="rating">${game.rank}</p>
-          <div class="buttons">
-            <button class="wishlist"><i class="fas fa-heart fa-2x" id="${partOfSite}-like-${game.id}"></i></button>
-            <button class="shelf"><i class="fas fa-bookmark fa-2x" id="${partOfSite}-shelf-${game.id}"></i></button>
-          </div>
-          <img src="${game.image_url}" alt="Scythe">
-          <div class="bottomBar">
-            <p class="players">${game.min_players}-${game.max_players} <i class="fas fa-users"></i></p>
-            <p class="duration">${game.min_playtime}-${game.max_playtime} <i class="fas fa-clock"></i></p>
-            <p class="age">${game.min_age}+</p>
-          </div>
+    var likeClass = '';
+    var shelfClass = '';
+    likes.forEach((like) => {
+      if(like.gameId == game.id){
+        likeClass = "liked";
+      }
+    });
+    shelved.forEach((shelf) => {
+      if(shelf.gameId == game.id){
+        shelfClass = "shelved";
+      }
+    });
+    var newString = deString(game.handle, "-"); // Do deString function. At funtion itself more information
+    html += `
+    <div class="game" value="${game.id}">
+      <div class="name"><p>${newString}</p></div>
+      <div class="data">
+        <p class="rating">${game.rank}</p>
+        <div class="buttons">
+          <button class="wishlist"><i class="fas fa-heart fa-2x like_${game.id} ${likeClass}" id="${partOfSite}_like_${game.id}"></i></button>
+          <button class="shelf"><i class="fas fa-bookmark fa-2x shelf_${game.id} ${shelfClass}" id="${partOfSite}_shelf_${game.id}"></i></button>
         </div>
-      </div>`;
-      // The html for each game
+        <img src="${game.image_url}" alt="Scythe">
+        <div class="bottomBar">
+          <p class="players">${game.min_players}-${game.max_players} <i class="fas fa-users"></i></p>
+          <p class="duration">${game.min_playtime}-${game.max_playtime} <i class="fas fa-clock"></i></p>
+          <p class="age">${game.min_age}+</p>
+        </div>
+      </div>
+    </div>`;
+    // The html for each game
   }
   document.getElementById(htmlId).innerHTML = html; // Put the builded games list into the right place in html with the corensponding id
 }
 
 function selectBackground(game,id) { // Change background img to the first boardgame of this place on the site
-  document.getElementById(id).style.backgroundImage = `url('${game.image_url}')`;
+  try{
+    document.getElementById(id).style.backgroundImage = `url('${game.image_url}')`;
+  }catch(err){
+    console.log(err);
+    // Fallback background, if there is an error use this background
+    document.getElementById(id).style.backgroundImage = `url('${topGames.games[0].image_url}')`;
+  }finally{
+    return;
+  }
 }
-
-
 
 // ------------------- //
 // seperator functions //
@@ -253,6 +351,81 @@ function saveId(userData){ // If login or signup is succes save id in local toke
   window.location.reload(true);
 }
 
+// -------------------- //
+// Like and shelf Items //
+// -------------------- //
+async function likeFunction(gameId){
+  try{ // Try to fetch
+    var checkUrl = `${link}game?userId=${localStorage.getItem("userId")}&gameId=${gameId}`;
+    const exists = await fetchData(checkUrl,{method: 'GET'});
+    if(exists.length == 0){
+      try{ // Try to fetch
+        var postUrl = `${link}like?userId=${localStorage.getItem("userId")}&gameId=${gameId}`;
+        const created = await fetchData(postUrl,{method: 'POST'});
+      }finally{
+        return;
+      }
+    }else{
+      try{ // Try to fetch
+        var postUrl = `${link}like?userId=${localStorage.getItem("userId")}&gameId=${gameId}`;
+        const updated = await fetchData(postUrl,{method: 'PUT'});
+      }finally{
+        return;
+      }
+    }
+  }catch(err){
+    console.log(err);
+  }
+}
+
+async function shelfFunction(gameId){
+  try{ // Try to fetch
+    var checkUrl = `${link}game?userId=${localStorage.getItem("userId")}&gameId=${gameId}`;
+    const exists = await fetchData(checkUrl,{method: 'GET'});
+    if(exists.length == 0){
+      try{ // Try to fetch
+        var postUrl = `${link}shelf?userId=${localStorage.getItem("userId")}&gameId=${gameId}`;
+        const created = await fetchData(postUrl,{method: 'POST'});
+      }finally{
+        return;
+      }
+    }else{
+      try{ // Try to fetch
+        var postUrl = `${link}shelf?userId=${localStorage.getItem("userId")}&gameId=${gameId}`;
+        const updated = await fetchData(postUrl,{method: 'PUT'});
+      }finally{
+        return;
+      }
+    }
+  }catch(err){
+    console.log(err);
+  }
+}
+
+async function fetchAllLikes(){
+  try{ // Try to fetch
+    var checkUrl = `${link}likes?userId=${localStorage.getItem("userId")}`;
+    likes = await fetchData(checkUrl,{method: 'GET'});
+    if(likes == ''){
+      console.log("empty");
+    }
+  }catch(err){
+    console.log(err);
+  }
+}
+
+async function fetchAllShelves(){
+  try{ // Try to fetch
+    var checkUrl = `${link}shelved?userId=${localStorage.getItem("userId")}`;
+    shelved = await fetchData(checkUrl,{method: 'GET'});
+    if(shelved == ''){
+      console.log("empty");
+    }
+  }catch(err){
+    console.log(err);
+  }
+}
+
 // -------------- //
 // Event listners //
 // -------------- //
@@ -341,24 +514,104 @@ async function checkElements() { // After initialising open eventlistners
   // ---------------------- //
 
   // Check for clicks in the chosen field, in this case for likes and shelf clicks
-  document.getElementById('topGames').addEventListener('click', (event)=> {
+  document.getElementById('likeShelfField').addEventListener('click', (event)=> {
     //Keep searching for the parent node to register the correct click
-    const likeId = event.target.className.indexOf('game');
+    const likeShelfId = event.target.className.indexOf('game');
     // console.log(likeId);
     // console.log(event.target.id);
+
+    if(!localStorage.getItem("userId")){
+      showLogin()
+      return;
+    }
   
-    if(likeId){
+    if(likeShelfId){
       // If the something which is clicked is has the word heart in the classname get the id and like or unlike the game
       if(event.target.className.indexOf('heart') !== -1){
-        var newid = selectId(event.target.id, "-"); // Get the id by removing the prefixes
-        console.log('like', newid);
+        // Quick limited solusion while like fetch happens and the page data reloads
+        if(document.getElementById(event.target.id).classList.length == 4){
+          document.getElementById(event.target.id).classList.add("liked");
+        }else{
+          document.getElementById(event.target.id).classList.remove("liked");
+        }
+    
+        var newId = selectId(event.target.id, "_"); // Get the id by removing the prefixes
+        like(newId);
       }
       
       // If the something which is clicked is has the word bookmark in the classname get the id and shelf or unshelf the game
       if(event.target.className.indexOf('bookmark') !== -1){
-        var newid = selectId(event.target.id, "-"); // Get the id by removing the prefixes
-        console.log('bookmark', newid);
+        // Quick limited solusion while like fetch happens and the page data reloads
+        if(document.getElementById(event.target.id).classList.length == 4){
+          document.getElementById(event.target.id).classList.add("shelved");
+        }else{
+          document.getElementById(event.target.id).classList.remove("shelved");
+        }
+    
+        var newId = selectId(event.target.id, "_"); // Get the id by removing the prefixes
+        shelf(newId);
       }
     }
   });
+}
+
+// ------------------------------- //
+// For the like and shelf and fill //
+// ------------------------------- //
+async function like(id){
+  console.log('like', id);
+  await likeFunction(id);
+  await fetchAllLikes();
+  await fillLikedGames();
+  await loadPageData();
+}
+
+async function shelf(id){
+  console.log('bookmark', id);
+  await shelfFunction(id);
+  await fetchAllShelves();
+  await fillShelvedGames();
+  await loadPageData();
+}
+
+async function fillLikedGames(){
+  var idList = ``;
+  for(let i = 0; i < 8 && i < likes.length; i++) {
+    if(idList == ''){
+      idList += `${likes[i].gameId}`
+    } else {
+      idList += `,${likes[i].gameId}`
+    }
+  }
+  if(idList != ''){
+    likedGames = await fetchData(`https://api.boardgameatlas.com/api/search?ids=${idList}&descending=true&${apiKey}`); // Fetch the top 8 games
+    // A small sort
+    likedGames.games.sort((a, b) => {
+      return a.rank-b.rank;
+    });
+  }
+  if(idList == ''){
+    likedGames = '';
+  }
+}
+
+async function fillShelvedGames(){
+  var idList = ``;
+  for(let i = 0; i < 8 && i < shelved.length; i++) {
+    if(idList == ''){
+      idList += `${shelved[i].gameId}`
+    } else {
+      idList += `,${shelved[i].gameId}`
+    }
+  }
+  if(idList != ''){
+    shelvedGames = await fetchData(`https://api.boardgameatlas.com/api/search?ids=${idList}&descending=true&${apiKey}`); // Fetch the top 8 games
+    // A small sort
+    shelvedGames.games.sort((a, b) => {
+      return a.rank-b.rank;
+    });
+  }
+  if(idList == ''){
+    shelvedGames = '';
+  }
 }
