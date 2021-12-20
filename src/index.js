@@ -15,9 +15,8 @@ var topGames = []; // Array for topGames
 var randomGames = []; // Array for random games
 var likedGames = []; // Array for liked games
 var shelvedGames = []; // Array for shelved games
+var search = []; // Array for search data
 
-var likes = [];
-var shelved = [];
 var likes = []; // Array for the liked game Ids
 var shelved = []; // Array for the shelved game Ids
 
@@ -98,6 +97,13 @@ async function loadPageData(){
       document.getElementById("showShelved").style.display = 'none';
     }
   }
+  if(search != ''){
+    await buildList(search.games, 'searchedGames', "searched"); // Place the games on the page
+    await selectBackground(search.games[Math.floor(Math.random() * 8)], "bannerSearchedGames"); // Topgames background
+    document.getElementById("showSearched").style.display = 'flex';
+  }else{
+    document.getElementById("showSearched").style.display = 'none';
+  }
   document.getElementById("loading").style.display = "none";
 }
 
@@ -107,6 +113,11 @@ async function changeContent(){
   if(!localStorage.getItem("userId")){
     html += `
     <Div id="likeShelfField">
+      <div class="showSearched" id="showSearched">
+        <p class="title">Searched games</p>
+        <div id="searchedGames"></div>
+        <div class="banner" id="bannerSearchedGames"></div>
+      </div>
       <p class="title">Top games</p>
       <div id="topGames"></div>
       <div class="moreButton"><a href="#" id="moreTopGames">more topgames</a></div>
@@ -119,6 +130,11 @@ async function changeContent(){
   }else{
     html += `
     <Div id="likeShelfField">
+      <div class="showSearched" id="showSearched">
+        <p class="title">Searched games</p>
+        <div id="searchedGames"></div>
+        <div class="banner" id="bannerSearchedGames"></div>
+      </div>
       <p class="title">Top games</p>
       <div id="topGames"></div>
       <div class="moreButton"><a href="#" id="moreTopGames">more topgames</a></div>
@@ -436,7 +452,14 @@ async function checkElements() { // After initialising open eventlistners
     event.preventDefault();
     clearScreen();
   });
-  
+
+  // if you click on the searchbutton a fetch happens
+  document.getElementById("searchSubmit").addEventListener("click", function (event) {
+    event.preventDefault();
+    console.log("clicked");
+    searchFunction();
+  });
+
   // --------------- //
   // Account related //
   // --------------- //
@@ -555,11 +578,26 @@ async function checkElements() { // After initialising open eventlistners
   });
 }
 
+// Search Function
+async function searchFunction() {
+  var searchValue = document.getElementById("searchField").value;
+  search = await fetchData(`https://api.boardgameatlas.com/api/search?name=${searchValue}&limit=8&descending=true&${apiKey}`);
+  console.log(search.games);
+  // A small sort
+  search.games.sort((a, b) => {
+    return a.rank-b.rank;
+  });
+  console.log(search);
+  if(searchValue == ''){
+    search = '';
+  }
+  await loadPageData();
+}
+
 // ------------------------------- //
 // For the like and shelf and fill //
 // ------------------------------- //
 async function like(id){
-  console.log('like', id);
   await likeFunction(id);
   await fetchAllLikes();
   await fillLikedGames();
@@ -567,7 +605,6 @@ async function like(id){
 }
 
 async function shelf(id){
-  console.log('bookmark', id);
   await shelfFunction(id);
   await fetchAllShelves();
   await fillShelvedGames();
@@ -605,7 +642,7 @@ async function fillShelvedGames(){
     }
   }
   if(idList != ''){
-    shelvedGames = await fetchData(`https://api.boardgameatlas.com/api/search?ids=${idList}&descending=true&${apiKey}`); // Fetch the top 8 games
+    shelvedGames = await fetchData(`https://api.boardgameatlas.com/api/search?ids=${idList}&limit=8&descending=true&${apiKey}`); // Fetch the top 8 games
     // A small sort
     shelvedGames.games.sort((a, b) => {
       return a.rank-b.rank;
