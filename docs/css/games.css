@@ -149,3 +149,10 @@
   padding: 10px 30px;
   border: 1px black solid;
 }
+
+/* showLiked en showShelf */
+#showLiked,
+#showShelved {
+  display: flex;
+  flex-direction: column;
+}

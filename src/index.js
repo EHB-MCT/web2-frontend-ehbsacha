@@ -82,12 +82,21 @@ async function loadPageData(){
   // Set correct images as background
   await selectBackground(topGames.games[Math.floor(Math.random() * 8)], "bannerTopGames"); // Topgames background
   if(localStorage.getItem("userId")){
-    await selectBackground(randomGames[Math.floor(Math.random() * 8)], "bannerRandomGames"); // Randomgames backgound
     //set correct games
-    await buildList(likedGames.games, 'likedGames', "liked"); // Place the games on the page
-    await buildList(shelvedGames.games, 'shelvedGames', "shelved"); // Place the games on the page
-    // Set correct images as background
-    await selectBackground(likedGames.games[Math.floor(Math.random() * 8)], "bannerLikedGames"); // Topgames background
+    if(likedGames != ''){
+      await selectBackground(randomGames[Math.floor(Math.random() * 8)], "bannerRandomGames"); // Randomgames backgound
+      await buildList(likedGames.games, 'likedGames', "liked"); // Place the games on the page
+      document.getElementById("showLiked").style.display = 'flex';
+    }else{
+      document.getElementById("showLiked").style.display = 'none';
+    }
+    if(shelvedGames != ''){
+      await buildList(shelvedGames.games, 'shelvedGames', "shelved"); // Place the games on the page
+      await selectBackground(likedGames.games[Math.floor(Math.random() * 8)], "bannerLikedGames"); // Topgames background
+      document.getElementById("showShelved").style.display = 'flex';
+    }else{
+      document.getElementById("showShelved").style.display = 'none';
+    }
   }
   document.getElementById("loading").style.display = "none";
 }
@@ -117,14 +126,18 @@ async function changeContent(){
       <p class="title">Random games</p>
       <div id="randomGames"></div>
       <div class="moreButton"><a href="#" id="moreTopGames">more randomgames</a></div>
-      <div class="banner" id="bannerRandomGames"></div>
-      <p class="title">Liked games</p>
-      <div id="likedGames"></div>
-      <div class="moreButton"><a href="#" id="moreLikedGames">more likedgames</a></div>
-      <div class="banner" id="bannerLikedGames"></div>
-      <p class="title">Shelved games</p>
-      <div id="shelvedGames"></div>
-      <div class="moreButton"><a href="#" id="moreShelvedGames">more shelvedgames</a></div>
+      <div class="showLiked" id="showLiked">
+        <div class="banner" id="bannerRandomGames"></div>
+        <p class="title">Liked games</p>
+        <div id="likedGames"></div>
+        <div class="moreButton"><a href="#" id="moreLikedGames">more likedgames</a></div>
+      </div>
+      <div class="showShelved" id="showShelved">
+        <div class="banner" id="bannerLikedGames"></div>
+        <p class="title">Shelved games</p>
+        <div id="shelvedGames"></div>
+        <div class="moreButton"><a href="#" id="moreShelvedGames">more shelvedgames</a></div>
+      </div>
     </Div>`;
   }
   document.getElementById("content").innerHTML = html; // Put the builded games list into the right place in html with the corensponding id
@@ -178,6 +191,8 @@ function selectBackground(game,id) { // Change background img to the first board
     document.getElementById(id).style.backgroundImage = `url('${game.image_url}')`;
   }catch(err){
     console.log(err);
+    // Fallback background, if there is an error use this background
+    document.getElementById(id).style.backgroundImage = `url('${topGames.games[0].image_url}')`;
   }finally{
     return;
   }
@@ -568,11 +583,16 @@ async function fillLikedGames(){
       idList += `,${likes[i].gameId}`
     }
   }
-  likedGames = await fetchData(`https://api.boardgameatlas.com/api/search?ids=${idList}&descending=true&${apiKey}`); // Fetch the top 8 games
-  // A small sort
-  likedGames.games.sort((a, b) => {
-    return a.rank-b.rank;
-  });
+  if(idList != ''){
+    likedGames = await fetchData(`https://api.boardgameatlas.com/api/search?ids=${idList}&descending=true&${apiKey}`); // Fetch the top 8 games
+    // A small sort
+    likedGames.games.sort((a, b) => {
+      return a.rank-b.rank;
+    });
+  }
+  if(idList == ''){
+    likedGames = '';
+  }
 }
 
 async function fillShelvedGames(){
@@ -584,9 +604,14 @@ async function fillShelvedGames(){
       idList += `,${shelved[i].gameId}`
     }
   }
-  shelvedGames = await fetchData(`https://api.boardgameatlas.com/api/search?ids=${idList}&descending=true&${apiKey}`); // Fetch the top 8 games
-  // A small sort
-  shelvedGames.games.sort((a, b) => {
-    return a.rank-b.rank;
-  });
+  if(idList != ''){
+    shelvedGames = await fetchData(`https://api.boardgameatlas.com/api/search?ids=${idList}&descending=true&${apiKey}`); // Fetch the top 8 games
+    // A small sort
+    shelvedGames.games.sort((a, b) => {
+      return a.rank-b.rank;
+    });
+  }
+  if(idList == ''){
+    shelvedGames = '';
+  }
 }
