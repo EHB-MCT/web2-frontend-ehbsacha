@@ -15,7 +15,8 @@
 #topGames,
 #randomGames,
 #likedGames,
-#shelvedGames {
+#shelvedGames,
+#searchedGames {
   margin: 0 5% 50px;
   width: 90%;
   display: flex;
@@ -152,7 +153,8 @@
 
 /* showLiked en showShelf */
 #showLiked,
-#showShelved {
+#showShelved,
+#showSearched {
   display: flex;
   flex-direction: column;
 }
