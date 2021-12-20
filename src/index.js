@@ -13,9 +13,13 @@ var link = heroku;
 const apiKey = "client_id=5UGynejyAW"; //apiKey
 var topGames = []; // Array for topGames
 var randomGames = []; // Array for random games
+var likedGames = []; // Array for liked games
+var shelvedGames = []; // Array for shelved games
 
 var likes = [];
 var shelved = [];
+var likes = []; // Array for the liked game Ids
+var shelved = []; // Array for the shelved game Ids
 
 // ------------ //
 // On page load //
@@ -25,29 +29,29 @@ window.onload = async function(){ // On page load starts with all these items
   // ------------------------ //
   // logged in related navbar //
   // ------------------------ //
-  console.log(localStorage.getItem("userId"));
-  // Setup navbar (loggedin or not)
-  if(localStorage.getItem("userId")){
+  if(localStorage.getItem("userId")){ // Setup navbar (loggedin or not)
     document.getElementById("login").style.display = "none";
     document.getElementById("loggedin").style.display = "flex";
     await fetchAllLikes();
     await fetchAllShelves();
+    await fillLikedGames();
+    await fillShelvedGames();
   }
 
   // ----------------- //
   // Setup games fetch //
   // ----------------- //
   // fetch top games
-  topGames = await fetchData(`https://api.boardgameatlas.com/api/search?order_by=rank&limit=8&ascending=false&${apiKey}`); // Fetch the top 8 games
+  topGames = await fetchData(`https://api.boardgameatlas.com/api/search?order_by=rank&limit=8&${apiKey}`); // Fetch the top 8 games
   // fetch 8 random games
   for (let i = 0; i < 8; i++) {
     var randomGame = await fetchData(`https://api.boardgameatlas.com/api/search?random=true&${apiKey}`); // Fetch 8 random games
     randomGames.push(randomGame.games[0]);
   }
-
-  if(localStorage.getItem("userId")){
-    // Place the fetch for liked games and shelved games
-  }
+  // A small sort
+  randomGames.sort((a, b) => {
+    return a.rank-b.rank;
+  });
 
   // ----------------- //
   // Load the gamedata //
@@ -76,14 +80,14 @@ async function loadPageData(){
   await buildList(topGames.games, 'topGames', "top"); // Place the games on the page
   await buildList(randomGames, 'randomGames', "random"); // Place the games on the page
   // Set correct images as background
-  await selectBackground(topGames.games[0], "bannerTopGames"); // Topgames background
+  await selectBackground(topGames.games[Math.floor(Math.random() * 8)], "bannerTopGames"); // Topgames background
   if(localStorage.getItem("userId")){
-    await selectBackground(randomGames[Math.floor(Math.random() * 9)], "bannerRandomGames"); // Randomgames backgound
+    await selectBackground(randomGames[Math.floor(Math.random() * 8)], "bannerRandomGames"); // Randomgames backgound
     //set correct games
-    await buildList(topGames.games, 'likedGames', "liked"); // Place the games on the page
-    await buildList(randomGames, 'shelvedGames', "shelved"); // Place the games on the page
+    await buildList(likedGames.games, 'likedGames', "liked"); // Place the games on the page
+    await buildList(shelvedGames.games, 'shelvedGames', "shelved"); // Place the games on the page
     // Set correct images as background
-    await selectBackground(topGames.games[0], "bannerLikedGames"); // Topgames background
+    await selectBackground(likedGames.games[Math.floor(Math.random() * 8)], "bannerLikedGames"); // Topgames background
   }
   document.getElementById("loading").style.display = "none";
 }
@@ -130,7 +134,6 @@ async function changeContent(){
 // Reusable site build functions //
 // ----------------------------- //
 function buildList(games, htmlId, partOfSite){ // Build the list of games to put in the html and make them visible
-  
   //Change the innerHTML of the page
   let html = ''; // Start clean
   //Make a for loop to pass all the games who are needed to be displayed
@@ -171,7 +174,13 @@ function buildList(games, htmlId, partOfSite){ // Build the list of games to put
 }
 
 function selectBackground(game,id) { // Change background img to the first boardgame of this place on the site
-  document.getElementById(id).style.backgroundImage = `url('${game.image_url}')`;
+  try{
+    document.getElementById(id).style.backgroundImage = `url('${game.image_url}')`;
+  }catch(err){
+    console.log(err);
+  }finally{
+    return;
+  }
 }
 
 // ------------------- //
@@ -382,7 +391,6 @@ async function fetchAllLikes(){
   try{ // Try to fetch
     var checkUrl = `${link}likes?userId=${localStorage.getItem("userId")}`;
     likes = await fetchData(checkUrl,{method: 'GET'});
-    console.log(likes)
     if(likes == ''){
       console.log("empty");
     }
@@ -395,7 +403,6 @@ async function fetchAllShelves(){
   try{ // Try to fetch
     var checkUrl = `${link}shelved?userId=${localStorage.getItem("userId")}`;
     shelved = await fetchData(checkUrl,{method: 'GET'});
-    console.log(shelved)
     if(shelved == ''){
       console.log("empty");
     }
@@ -533,16 +540,53 @@ async function checkElements() { // After initialising open eventlistners
   });
 }
 
-// Created these two for the await
+// ------------------------------- //
+// For the like and shelf and fill //
+// ------------------------------- //
 async function like(id){
   console.log('like', id);
   await likeFunction(id);
   await fetchAllLikes();
+  await fillLikedGames();
   await loadPageData();
 }
+
 async function shelf(id){
   console.log('bookmark', id);
   await shelfFunction(id);
   await fetchAllShelves();
+  await fillShelvedGames();
   await loadPageData();
+}
+
+async function fillLikedGames(){
+  var idList = ``;
+  for(let i = 0; i < 8 && i < likes.length; i++) {
+    if(idList == ''){
+      idList += `${likes[i].gameId}`
+    } else {
+      idList += `,${likes[i].gameId}`
+    }
+  }
+  likedGames = await fetchData(`https://api.boardgameatlas.com/api/search?ids=${idList}&descending=true&${apiKey}`); // Fetch the top 8 games
+  // A small sort
+  likedGames.games.sort((a, b) => {
+    return a.rank-b.rank;
+  });
+}
+
+async function fillShelvedGames(){
+  var idList = ``;
+  for(let i = 0; i < 8 && i < shelved.length; i++) {
+    if(idList == ''){
+      idList += `${shelved[i].gameId}`
+    } else {
+      idList += `,${shelved[i].gameId}`
+    }
+  }
+  shelvedGames = await fetchData(`https://api.boardgameatlas.com/api/search?ids=${idList}&descending=true&${apiKey}`); // Fetch the top 8 games
+  // A small sort
+  shelvedGames.games.sort((a, b) => {
+    return a.rank-b.rank;
+  });
 }
