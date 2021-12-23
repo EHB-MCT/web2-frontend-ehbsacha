@@ -46,14 +46,7 @@ window.onload = async function(){ // On page load starts with all these items
   // fetch top games
   topGames = await fetchData(`https://api.boardgameatlas.com/api/search?order_by=rank&limit=8&${apiKey}`); // Fetch the top 8 games
   // fetch 8 random games
-  for (let i = 0; i < 8; i++) {
-    var randomGame = await fetchData(`https://api.boardgameatlas.com/api/search?random=true&${apiKey}`); // Fetch 8 random games
-    randomGames.push(randomGame.games[0]);
-  }
-  // A small sort
-  randomGames.sort((a, b) => {
-    return a.rank-b.rank;
-  });
+  randomGames = await fetchData(`https://api.boardgameatlas.com/api/search?order_by=rank&skip=${Math.floor(Math.random()*1000)}&limit=8&${apiKey}`); // Fetch 8 random games
 
   // ----------------- //
   // Load the gamedata //
@@ -80,7 +73,7 @@ async function fetchData(someUrl, method){ // Fetch the required data
 // ------------------------- //
 async function loadPageData(){
   await buildList(topGames.games, 'topGames', "top"); // Place the games on the page
-  await buildList(randomGames, 'randomGames', "random"); // Place the games on the page
+  await buildList(randomGames.games, 'randomGames', "random"); // Place the games on the page
   // Set correct images as background
   await selectBackground(topGames.games[Math.floor(Math.random() * 8)], "bannerTopGames"); // Topgames background
   if(localStorage.getItem("userId")){
