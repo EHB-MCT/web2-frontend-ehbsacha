@@ -12,3 +12,5 @@ Reload page on login/ signup: https://www.w3docs.com/snippets/javascript/how-to-
 delay function: https://www.delftstack.com/howto/javascript/javascript-wait-for-x-seconds/
 
 Used this loading screen: https://stackoverflow.com/questions/25253391/javascript-loading-screen-while-page-loads
+
+anchor points footer: https://www.w3docs.com/snippets/html/how-to-create-an-anchor-link-to-jump-to-a-specific-part-of-a-page.html

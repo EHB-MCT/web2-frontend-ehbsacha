@@ -3,6 +3,7 @@
 @import url("banner.css");
 @import url("popup.css");
 @import url("loading.css");
+@import url("footer.css");
 
 * {
   margin: 0;

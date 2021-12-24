@@ -112,41 +112,40 @@ async function changeContent(){
     html += `
     <Div id="likeShelfField">
       <div class="showSearched" id="showSearched">
-        <p class="title">Searched games</p>
+        <p class="title" id="searchedTitle">Searched games</p>
         <div id="searchedGames"></div>
         <div class="banner" id="bannerSearchedGames"></div>
       </div>
-      <p class="title">Top games</p>
+      <p class="title" id="topTitle">Top games</p>
       <div id="topGames"></div>
       <div class="moreButton"><a href="#" id="moreTopGames">more topgames</a></div>
       <div class="banner" id="bannerTopGames"></div>
-      <p class="title">Random games</p>
+      <p class="title" id="randomTitle">Random games</p>
       <div id="randomGames"></div>
-      <div class="banner" id="bannerRandomGames"></div>
     </Div>`;
   }else{
     html += `
     <Div id="likeShelfField">
       <div class="showSearched" id="showSearched">
-        <p class="title">Searched games</p>
+        <p class="title" id="searchedTitle">Searched games</p>
         <div id="searchedGames"></div>
         <div class="banner" id="bannerSearchedGames"></div>
       </div>
-      <p class="title">Top games</p>
+      <p class="title" id="topTitle">Top games</p>
       <div id="topGames"></div>
       <div class="moreButton"><a href="#" id="moreTopGames">more topgames</a></div>
       <div class="banner" id="bannerTopGames"></div>
-      <p class="title">Random games</p>
+      <p class="title" id="randomTitle">Random games</p>
       <div id="randomGames"></div>
       <div class="showLiked" id="showLiked">
         <div class="banner" id="bannerRandomGames"></div>
-        <p class="title">Liked games</p>
+        <p class="title" id="likedTitle">Liked games</p>
         <div id="likedGames"></div>
         <div class="moreButton"><a href="#" id="moreLikedGames">more likedgames</a></div>
       </div>
       <div class="showShelved" id="showShelved">
         <div class="banner" id="bannerLikedGames"></div>
-        <p class="title">Shelved games</p>
+        <p class="title" id="shelvedTitle">Shelved games</p>
         <div id="shelvedGames"></div>
         <div class="moreButton"><a href="#" id="moreShelvedGames">more shelvedgames</a></div>
       </div>
