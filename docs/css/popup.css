@@ -10,7 +10,8 @@
 
 .loginScreen,
 .loggedinScreen,
-.deleteScreen {
+.deleteScreen,
+.aboutScreen {
   display: none;
   flex-wrap: wrap;
 }
@@ -28,7 +29,7 @@
   font-weight: 500;
   background-color: white;
   border: rgba(152, 160, 168, 0.808) 1px solid;
-  border-radius: 20px;
+  border-radius: 5px;
   z-index: 2;
 }
 
@@ -48,8 +49,8 @@
 }
 
 .logout {
-  right: 3.3vw;
-  top: 65px;
+  right: 1vw;
+  bottom: 4vw;
   color: rgb(255, 0, 0);
   border: rgb(255, 0, 0) 1px solid;
 }
@@ -66,13 +67,14 @@
 .signupPopup,
 .changePasswordPopup,
 .changeNamePopup,
-.deletePopup {
+.deletePopup,
+.aboutPopup {
   min-width: 400px;
   position: fixed;
   display: flex;
   background-color: white;
   border: rgba(152, 160, 168, 0.808) 1px solid;
-  border-radius: 20px;
+  border-radius: 5px;
   width: 30%;
   z-index: 2;
 }
@@ -81,7 +83,8 @@
 .signupPopup form,
 .changePasswordPopup form,
 .changeNamePopup form,
-.deletePopup form {
+.deletePopup form,
+.aboutPopup div {
   width: 100%;
   padding: 50px;
   display: flex;
@@ -100,6 +103,15 @@
 
 .deletePopup {
   margin: 15% 0 0 35%;
+}
+
+.aboutPopup {
+  margin: 15% 0 0 30%;
+  width: 40%;
+}
+
+.aboutPopup p {
+  padding: 15px 0 0;
 }
 
 form input {
