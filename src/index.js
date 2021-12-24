@@ -23,6 +23,8 @@ var shelved = []; // Array for the shelved game Ids
 var pageOfOnlyShow = 0; // The page you are on if you are vititing a specific place
 var onlyshow = false;
 
+var screenLimit = 6;
+
 // ------------ //
 // On page load //
 // ------------ //
@@ -36,17 +38,17 @@ window.onload = async function(){ // On page load starts with all these items
     document.getElementById("loggedin").style.display = "flex";
     await fetchAllLikes();
     await fetchAllShelves();
-    await fillLikedGames(8);
-    await fillShelvedGames(8);
+    await fillLikedGames(screenLimit);
+    await fillShelvedGames(screenLimit);
   }
 
   // ----------------- //
   // Setup games fetch //
   // ----------------- //
   // fetch top games
-  topGames = await fetchData(`https://api.boardgameatlas.com/api/search?order_by=rank&limit=8&${apiKey}`); // Fetch the top 8 games
+  topGames = await fetchData(`https://api.boardgameatlas.com/api/search?order_by=rank&limit=${screenLimit}&${apiKey}`); // Fetch the top 8 games
   // fetch 8 random games
-  randomGames = await fetchData(`https://api.boardgameatlas.com/api/search?order_by=rank&skip=${Math.floor(Math.random()*1000)}&limit=8&${apiKey}`); // Fetch 8 random games
+  randomGames = await fetchData(`https://api.boardgameatlas.com/api/search?order_by=rank&skip=${Math.floor(Math.random()*1000)}&limit=${screenLimit}&${apiKey}`); // Fetch 8 random games
 
   // ----------------- //
   // Load the gamedata //
@@ -151,6 +153,7 @@ async function changeContent(){
     </Div>`;
   }
   document.getElementById("content").innerHTML = html; // Put the builded games list into the right place in html with the corensponding id
+  checkElements();
 }
 // More random games button: <div class="moreButton"><a href="#" id="moreRandomGames">more randomgames</a></div>
 
@@ -201,7 +204,6 @@ function selectBackground(game,id) { // Change background img to the first board
   try{
     document.getElementById(id).style.backgroundImage = `url('${game.image_url}')`;
   }catch(err){
-    console.log(err);
     // Fallback background, if there is an error use this background
     document.getElementById(id).style.backgroundImage = `url('${topGames.games[1].image_url}')`;
   }finally{
@@ -228,18 +230,27 @@ function selectId(string, separator) { // the difference with the one above is t
 // Show and hide items //
 // ------------------- //
 function showLogin() { // If loginbutton in the navbar gets clicked opens the login screen
+  clearScreen();
   document.getElementById("filter").style.display = "flex";
   document.getElementById("loginScreen").style.display = "flex";
 }
 
 function showLoggedIn() { // If account in the navbar gets clicked opens the change user data screen
+  clearScreen();
   document.getElementById("filter").style.display = "flex";
   document.getElementById("loggedinScreen").style.display = "flex";
 }
 
 function showDelete() { // If account in the navbar gets clicked opens the change user data screen
+  clearScreen();
   document.getElementById("deleteScreen").style.display = "flex";
   document.getElementById("loggedinScreen").style.display = "none";
+}
+
+function showAbout() { // If loginbutton in the navbar gets clicked opens the login screen
+  clearScreen();
+  document.getElementById("filter").style.display = "flex";
+  document.getElementById("aboutScreen").style.display = "flex";
 }
 
 function clearScreen(){ // Hides everything unnecessary
@@ -247,6 +258,7 @@ function clearScreen(){ // Hides everything unnecessary
   document.getElementById("loginScreen").style.display = "none";
   document.getElementById("loggedinScreen").style.display = "none";
   document.getElementById("deleteScreen").style.display = "none";
+  document.getElementById("aboutScreen").style.display = "none";
 }
 
 function delay(n){
@@ -418,7 +430,7 @@ async function fetchAllLikes(){
     var checkUrl = `${link}likes?userId=${localStorage.getItem("userId")}`;
     likes = await fetchData(checkUrl,{method: 'GET'});
     if(likes == ''){
-      console.log("empty");
+      console.log("empty likes");
     }
   }catch(err){
     console.log(err);
@@ -430,7 +442,7 @@ async function fetchAllShelves(){
     var checkUrl = `${link}shelved?userId=${localStorage.getItem("userId")}`;
     shelved = await fetchData(checkUrl,{method: 'GET'});
     if(shelved == ''){
-      console.log("empty");
+      console.log("empty shelf");
     }
   }catch(err){
     console.log(err);
@@ -460,6 +472,16 @@ async function checkElements() { // After initialising open eventlistners
     onlyShow("Top","top");
   });
 
+  document.getElementById("home").addEventListener("click", function (event) {
+    event.preventDefault();
+    returnHome();
+  });
+
+  document.getElementById("about").addEventListener("click", function (event) {
+    event.preventDefault();
+    showAbout();
+  });
+
   // --------------- //
   // Account related //
   // --------------- //
@@ -470,11 +492,11 @@ async function checkElements() { // After initialising open eventlistners
     // If you click on login button in the navigation, show or hide the forms no login of signup
     document.getElementById("login").addEventListener("click", function (event) {
       event.preventDefault();
-      if(document.getElementById("filter").style.display == "flex"){
-        clearScreen(); // If the login sceen is open close it
-      }else{
+      // if(document.getElementById("filter").style.display == "flex"){
+      //   clearScreen(); // If the login sceen is open close it
+      // }else{
         showLogin(); // If the login screen in closed open it
-      }
+      // }
     });
 
     // If you click on the loginsubmit do login action
@@ -494,11 +516,11 @@ async function checkElements() { // After initialising open eventlistners
     // If you click on account button in the navigation, show or hide the forms to change password or name
     document.getElementById("loggedin").addEventListener("click", function (event) {
       event.preventDefault();
-      if(document.getElementById("filter").style.display == "flex"){
-        clearScreen(); // If the login sceen is open close it
-      }else{
+      // if(document.getElementById("filter").style.display == "flex"){
+      //   clearScreen(); // If the login sceen is open close it
+      // }else{
         showLoggedIn(); // If the login screen in closed open it
-      }
+      // }
     });
 
     // If you click on the signupsubmit do login action
@@ -595,8 +617,9 @@ async function likeClickCheck(){
 
 // Search Function
 async function searchFunction() {
+  await returnHome();
   var searchValue = document.getElementById("searchField").value;
-  search = await fetchData(`https://api.boardgameatlas.com/api/search?name=${searchValue}&limit=8&descending=true&${apiKey}`);
+  search = await fetchData(`https://api.boardgameatlas.com/api/search?name=${searchValue}&limit=${screenLimit}&descending=true&${apiKey}`);
   console.log(search.games);
   // A small sort
   search.games.sort((a, b) => {
@@ -615,7 +638,7 @@ async function searchFunction() {
 async function like(id){
   await likeFunction(id);
   await fetchAllLikes();
-  await fillLikedGames(8);
+  await fillLikedGames(screenLimit);
   if(!onlyshow){
     await loadPageData();
   }
@@ -709,7 +732,7 @@ async function onlyShow(capital, name, skip) {
   likeClickCheck();
 }
 
-function checkTop(params) {
+function checkTop() {
   document.getElementById("next_Top").addEventListener("click", function (event) {
     event.preventDefault();
     pageOfOnlyShow++;
@@ -730,4 +753,11 @@ function checkTop(params) {
 async function onlyTop(skip) {
   topGames = await fetchData(`https://api.boardgameatlas.com/api/search?order_by=rank&limit=24&skip=${skip * 24}&${apiKey}`); // Fetch the top 8 games
   await buildList(topGames.games, 'topGames', 'top');
+}
+
+async function returnHome() {
+  await changeContent();
+  topGames = await fetchData(`https://api.boardgameatlas.com/api/search?order_by=rank&limit=${screenLimit}&${apiKey}`)
+  randomGames = await fetchData(`https://api.boardgameatlas.com/api/search?order_by=rank&skip=${Math.floor(Math.random()*1000)}&limit=${screenLimit}&${apiKey}`);
+  await loadPageData();
 }
